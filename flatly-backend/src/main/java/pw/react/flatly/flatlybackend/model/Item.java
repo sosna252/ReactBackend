@@ -24,7 +24,7 @@ public class Item {
     @Column(name = "start_date_time")
     private LocalDate StartDateTime;
 
-    @Column(name = "start_date_time")
+    @Column(name = "end_date_time")
     private LocalDate EndDateTime;
 
     @ElementCollection
