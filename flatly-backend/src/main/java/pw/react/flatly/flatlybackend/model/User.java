@@ -33,4 +33,36 @@ public class User {
     private List<Item> items;
 
     public User() {}
+
+    public UUID getUserId() {
+        return UserId;
+    }
+
+    public void setUserId(UUID userId) {
+        UserId = userId;
+    }
+
+    public String getLogin() {
+        return Login;
+    }
+
+    public void setLogin(String login) {
+        Login = login;
+    }
+
+    public String getPassword() {
+        return Password;
+    }
+
+    public void setPassword(String password) {
+        Password = password;
+    }
+
+    public UUID getSecurityToken() {
+        return SecurityToken;
+    }
+
+    public void setSecurityToken(UUID securityToken) {
+        SecurityToken = securityToken;
+    }
 }
