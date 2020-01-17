@@ -14,57 +14,61 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private UUID Id;
+    private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="author_id")
     @JsonIgnore
     private User user;
 
-    @Column(name = "start_date_time")
-    private LocalDate StartDateTime;
+    @Column
+    private LocalDate start_date_time;
 
-    @Column(name = "end_date_time")
-    private LocalDate EndDateTime;
+    @Column
+    private LocalDate end_date_time;
 
     @ElementCollection
     @OneToMany(mappedBy="item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Booking> bookings;
 
-    @Column(name = "title")
-    private String Title;
+    @Column
+    private String title;
 
-    @Column(name = "description")
-    private String Description;
+    @Column
+    private String description;
 
-    @Column(name = "photo")
-    private byte[] Photo;
+    @Column
+    private byte[] photo;
 
-    @Column(name = "room_number")
-    private int RoomNumber;
+    @Column
+    private int room_number;
 
-    @Column(name = "beds")
-    private int Beds;
+    @Column
+    private int beds;
 
-    @Column(name = "price")
-    private BigDecimal Price;
+    @Column
+    private BigDecimal price;
 
-    @Column(name = "rating")
-    private BigDecimal Rating;
+    @Column
+    private BigDecimal rating;
 
-    @Column(name = "city")
-    private String City;
+    @Column
+    private String city;
 
-    @Column(name = "address")
-    private String Address;
+    @Column
+    private String address;
 
-    @Column(name = "country")
-    private String Country;
+    @Column
+    private String country;
 
     public Item() {}
 
-    public LocalDate getStartDateTime() {
-        return StartDateTime;
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public User getUser() {
@@ -75,16 +79,20 @@ public class Item {
         this.user = user;
     }
 
-    public void setStartDateTime(LocalDate startDateTime) {
-        StartDateTime = startDateTime;
+    public LocalDate getStart_date_time() {
+        return start_date_time;
     }
 
-    public LocalDate getEndDateTime() {
-        return EndDateTime;
+    public void setStart_date_time(LocalDate start_date_time) {
+        this.start_date_time = start_date_time;
     }
 
-    public void setEndDateTime(LocalDate endDateTime) {
-        EndDateTime = endDateTime;
+    public LocalDate getEnd_date_time() {
+        return end_date_time;
+    }
+
+    public void setEnd_date_time(LocalDate end_date_time) {
+        this.end_date_time = end_date_time;
     }
 
     public List<Booking> getBookings() {
@@ -95,19 +103,83 @@ public class Item {
         this.bookings = bookings;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public byte[] getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(byte[] photo) {
+        this.photo = photo;
+    }
+
+    public int getRoom_number() {
+        return room_number;
+    }
+
+    public void setRoom_number(int room_number) {
+        this.room_number = room_number;
+    }
+
     public int getBeds() {
-        return Beds;
+        return beds;
     }
 
     public void setBeds(int beds) {
-        Beds = beds;
+        this.beds = beds;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public BigDecimal getRating() {
+        return rating;
+    }
+
+    public void setRating(BigDecimal rating) {
+        this.rating = rating;
     }
 
     public String getCity() {
-        return City;
+        return city;
     }
 
     public void setCity(String city) {
-        City = city;
+        this.city = city;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 }

@@ -9,10 +9,10 @@ import java.util.UUID;
 public interface ItemService {
     Item save(Item item);
 
-    List<Item> findByParams(LocalDate dateFrom, LocalDate dateTo, String city, Integer people, UUID authorId);
-    List<List<LocalDate>> findVacantById(UUID id);
+    List<Item> findByParams(LocalDate dateFrom, LocalDate dateTo, String city, Integer people, Long authorId);
+    List<List<LocalDate>> findVacantById(Long id);
 
-    Item findById(UUID id);
+    Item findById(Long id);
 
-    boolean deleteById(UUID id);
+    boolean deleteById(Long id);
 }

@@ -12,47 +12,95 @@ public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private UUID Id;
+    @Column
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="item_id")
     @JsonIgnore
     private Item item;
 
-    @Column(name = "start_date")
-    private LocalDate StartDate;
+    @Column
+    private LocalDate start_date;
 
-    @Column(name = "end_date")
-    private LocalDate EndDate;
+    @Column
+    private LocalDate end_date;
 
-    @Column(name = "name")
-    private String Name;
+    @Column
+    private String name;
 
-    @Column(name = "last_name")
-    private String LastName;
+    @Column
+    private String last_name;
 
-    @Column(name = "email")
-    private String Email;
+    @Column
+    private String email;
 
-    @Column(name = "people")
-    private int People;
+    @Column
+    private int people;
 
     public Booking() {}
 
-    public LocalDate getStartDate() {
-        return StartDate;
+    public Long getId() {
+        return id;
     }
 
-    public void setStartDate(LocalDate startDate) {
-        StartDate = startDate;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public LocalDate getEndDate() {
-        return EndDate;
+    public Item getItem() {
+        return item;
     }
 
-    public void setEndDate(LocalDate endDate) {
-        EndDate = endDate;
+    public void setItem(Item item) {
+        this.item = item;
+    }
+
+    public LocalDate getStart_date() {
+        return start_date;
+    }
+
+    public void setStart_date(LocalDate start_date) {
+        this.start_date = start_date;
+    }
+
+    public LocalDate getEnd_date() {
+        return end_date;
+    }
+
+    public void setEnd_date(LocalDate end_date) {
+        this.end_date = end_date;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getLast_name() {
+        return last_name;
+    }
+
+    public void setLast_name(String last_name) {
+        this.last_name = last_name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public int getPeople() {
+        return people;
+    }
+
+    public void setPeople(int people) {
+        this.people = people;
     }
 }

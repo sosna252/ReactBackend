@@ -5,5 +5,5 @@ import pw.react.flatly.flatlybackend.model.Item;
 
 import java.util.UUID;
 
-public interface ItemRepository extends JpaRepository<Item, UUID> {
+public interface ItemRepository extends JpaRepository<Item, Long> {
 }

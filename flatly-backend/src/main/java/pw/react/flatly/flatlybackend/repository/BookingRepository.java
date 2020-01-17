@@ -5,5 +5,5 @@ import pw.react.flatly.flatlybackend.model.Booking;
 
 import java.util.UUID;
 
-public interface BookingRepository extends JpaRepository<Booking, UUID> {
+public interface BookingRepository extends JpaRepository<Booking, Long> {
 }

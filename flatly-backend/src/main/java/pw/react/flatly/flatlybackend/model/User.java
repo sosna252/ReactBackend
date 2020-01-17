@@ -10,23 +10,22 @@ import java.util.UUID;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "user_id")
-    private UUID UserId;
+    private Long id;
 
-    @Column(name = "login")
-    private String Login;
+    @Column
+    private String login;
 
-    @Column(name = "password")
-    private String Password;
+    @Column
+    private String password;
 
-    @Column(name = "first_name")
-    private String FirstName;
+    @Column
+    private String first_name;
 
-    @Column(name = "last_name")
-    private String LastName;
+    @Column
+    private String last_name;
 
-    @Column(name = "security_token")
-    private UUID SecurityToken;
+    @Column
+    private UUID security_token;
 
     @ElementCollection
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -34,35 +33,59 @@ public class User {
 
     public User() {}
 
-    public UUID getUserId() {
-        return UserId;
+    public Long getId() {
+        return id;
     }
 
-    public void setUserId(UUID userId) {
-        UserId = userId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getLogin() {
-        return Login;
+        return login;
     }
 
     public void setLogin(String login) {
-        Login = login;
+        this.login = login;
     }
 
     public String getPassword() {
-        return Password;
+        return password;
     }
 
     public void setPassword(String password) {
-        Password = password;
+        this.password = password;
     }
 
-    public UUID getSecurityToken() {
-        return SecurityToken;
+    public String getFirst_name() {
+        return first_name;
     }
 
-    public void setSecurityToken(UUID securityToken) {
-        SecurityToken = securityToken;
+    public void setFirst_name(String first_name) {
+        this.first_name = first_name;
+    }
+
+    public String getLast_name() {
+        return last_name;
+    }
+
+    public void setLast_name(String last_name) {
+        this.last_name = last_name;
+    }
+
+    public UUID getSecurity_token() {
+        return security_token;
+    }
+
+    public void setSecurity_token(UUID security_token) {
+        this.security_token = security_token;
+    }
+
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Item> items) {
+        this.items = items;
     }
 }

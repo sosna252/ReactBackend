@@ -27,7 +27,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> findByParams(LocalDate dateFrom, LocalDate dateTo, String city, Integer people, UUID authorId) {
+    public List<Item> findByParams(LocalDate dateFrom, LocalDate dateTo, String city, Integer people, Long authorId) {
 
         List<Item> items = itemRepository.findAll().stream()
                 .filter(item -> {
@@ -35,26 +35,26 @@ public class ItemServiceImpl implements ItemService {
                     if(dateFrom==null && dateTo==null) return true;
 
                     List<Booking> bookings = item.getBookings();
-                    LocalDate from = dateFrom!=null ? dateFrom : item.getStartDateTime();
-                    LocalDate to = dateTo!=null ? dateTo : item.getEndDateTime();
+                    LocalDate from = dateFrom!=null ? dateFrom : item.getStart_date_time();
+                    LocalDate to = dateTo!=null ? dateTo : item.getEnd_date_time();
 
 
                     for (Booking booking: bookings) {
-                        if(booking.getStartDate().compareTo(from)>=0 && booking.getStartDate().compareTo(to)<=0) return false;
+                        if(booking.getStart_date().compareTo(from)>=0 && booking.getStart_date().compareTo(to)<=0) return false;
                     }
 
                     return true;
                 })
                 .filter(item -> city == null || city.equals(item.getCity()))
                 .filter(item -> people == null || people <= item.getBeds())
-                .filter(item -> authorId == null || authorId == item.getUser().getUserId())
+                .filter(item -> authorId == null || authorId == item.getUser().getId())
                 .collect(Collectors.toList());
 
         return items;
     }
 
     @Override
-    public List<List<LocalDate>> findVacantById(UUID id) {
+    public List<List<LocalDate>> findVacantById(Long id) {
         Item item = itemRepository.findById(id).orElse(null);
         if(item==null) return null;
 
@@ -63,28 +63,28 @@ public class ItemServiceImpl implements ItemService {
         List<List<LocalDate>> lists = new ArrayList<List<LocalDate>>();
 
         List<LocalDate> dates = new ArrayList<LocalDate>();
-        dates.add(item.getStartDateTime());
+        dates.add(item.getStart_date_time());
         for (Booking booking:bookings) {
-            dates.add(booking.getStartDate());
+            dates.add(booking.getStart_date());
             lists.add(dates);
 
             dates = new ArrayList<LocalDate>();
 
-            dates.add(booking.getEndDate());
+            dates.add(booking.getEnd_date());
         }
-        dates.add(item.getEndDateTime());
+        dates.add(item.getEnd_date_time());
         lists.add(dates);
 
         return lists;
     }
 
     @Override
-    public Item findById(UUID id) {
+    public Item findById(Long id) {
         return itemRepository.findById(id).orElse(null);
     }
 
     @Override
-    public boolean deleteById(UUID id) {
+    public boolean deleteById(Long id) {
         Item item = itemRepository.findById(id).orElse(null);
         if(item == null) return false;
 

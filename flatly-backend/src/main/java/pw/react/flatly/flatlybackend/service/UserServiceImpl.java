@@ -21,6 +21,6 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByLogin(login).orElse(null);
 
         if(user==null || !user.getPassword().equals(password)) return null;
-        else return user.getSecurityToken();
+        else return user.getSecurity_token();
     }
 }
