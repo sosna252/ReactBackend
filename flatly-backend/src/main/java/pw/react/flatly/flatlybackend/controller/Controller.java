@@ -2,15 +2,19 @@ package pw.react.flatly.flatlybackend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pw.react.flatly.flatlybackend.model.Item;
+import pw.react.flatly.flatlybackend.model.ItemPhoto;
 import pw.react.flatly.flatlybackend.model.User;
 import pw.react.flatly.flatlybackend.repository.UserRepository;
 import pw.react.flatly.flatlybackend.service.BookingService;
+import pw.react.flatly.flatlybackend.service.ItemPhotoService;
 import pw.react.flatly.flatlybackend.service.ItemService;
 import pw.react.flatly.flatlybackend.service.UserService;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
@@ -23,14 +27,17 @@ public class Controller {
     UserService userService;
     ItemService itemService;
     BookingService bookingService;
+    ItemPhotoService itemPhotoService;
 
     UserRepository userRepository;
 
     @Autowired
-    public Controller(UserService userService, ItemService itemService, BookingService bookingService, UserRepository userRepository) {
+    public Controller(UserService userService, ItemService itemService, BookingService bookingService, ItemPhotoService itemPhotoService, UserRepository userRepository) {
         this.userService = userService;
         this.itemService = itemService;
         this.bookingService = bookingService;
+
+        this.itemPhotoService = itemPhotoService;
 
         this.userRepository = userRepository;
     }
@@ -128,5 +135,17 @@ public class Controller {
     public ResponseEntity deleteItem(@PathVariable("id") Long id) {
         if(itemService.deleteById(id)) return new ResponseEntity("Item deleted", HttpStatus.OK);
         else return new ResponseEntity("something went wrong", HttpStatus.FORBIDDEN);
+    }
+
+
+
+
+    // Przesyłanie obrazka
+
+    @GetMapping(path = "/itemphoto/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public @ResponseBody byte[] getItemPhoto(@PathVariable("id") Long id) throws IOException {
+        ItemPhoto itemPhoto = itemPhotoService.findItemPhotoByItemId(id);
+
+        return itemPhoto.getPhoto();
     }
 }

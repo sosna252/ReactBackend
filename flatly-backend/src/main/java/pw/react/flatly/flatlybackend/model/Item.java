@@ -14,7 +14,7 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private UUID id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="author_id")
@@ -37,8 +37,9 @@ public class Item {
     @Column
     private String description;
 
-    @Column
-    private byte[] photo;
+    @OneToOne(mappedBy = "item")
+    @JsonIgnore
+    private ItemPhoto item_photo;
 
     @Column
     private int room_number;
@@ -63,11 +64,11 @@ public class Item {
 
     public Item() {}
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -119,12 +120,12 @@ public class Item {
         this.description = description;
     }
 
-    public byte[] getPhoto() {
-        return photo;
+    public ItemPhoto getItem_photo() {
+        return item_photo;
     }
 
-    public void setPhoto(byte[] photo) {
-        this.photo = photo;
+    public void setItem_photo(ItemPhoto item_photo) {
+        this.item_photo = item_photo;
     }
 
     public int getRoom_number() {

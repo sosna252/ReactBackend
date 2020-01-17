@@ -22,6 +22,26 @@ CREATE SEQUENCE public.bookings_id_seq
 ALTER TABLE public.bookings_id_seq OWNER TO postgres;
 ALTER SEQUENCE public.bookings_id_seq OWNED BY public.bookings.id;
 
+
+DROP TABLE IF EXISTS public.item_photos;
+CREATE TABLE public.item_photos (
+    id bigint NOT NULL,
+    photo bytea NOT NULL,
+    item_id integer NOT NULL
+);
+ALTER TABLE public.item_photos OWNER TO postgres;
+
+DROP SEQUENCE IF EXISTS public.item_photos_id_seq;
+CREATE SEQUENCE public.item_photos_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER TABLE public.item_photos_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.item_photos_id_seq OWNED BY public.item_photos.id;
+
 DROP TABLE IF EXISTS public.items
 CREATE TABLE public.items (
     id bigint NOT NULL,
