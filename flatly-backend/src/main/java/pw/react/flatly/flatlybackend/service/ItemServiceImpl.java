@@ -2,6 +2,8 @@ package pw.react.flatly.flatlybackend.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pw.react.flatly.flatlybackend.exception.ItemNotFoundException;
+import pw.react.flatly.flatlybackend.exception.ParamsMismatchException;
 import pw.react.flatly.flatlybackend.model.Booking;
 import pw.react.flatly.flatlybackend.model.Item;
 import pw.react.flatly.flatlybackend.repository.ItemRepository;
@@ -28,6 +30,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<Item> findByParams(LocalDate dateFrom, LocalDate dateTo, String city, Integer people, Long authorId) {
+
+        if(dateFrom.compareTo(dateTo)>0) {
+            throw new ParamsMismatchException("Data rozpoczęcia nie może być późniejsza niż zakończenia");
+        }
 
         List<Item> items = itemRepository.findAll().stream()
                 .filter(item -> {
@@ -80,22 +86,19 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item findById(Long id) {
-        return itemRepository.findById(id).orElse(null);
+        return itemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
     }
 
     @Override
-    public boolean deleteById(Long id) {
-        Item item = itemRepository.findById(id).orElse(null);
-        if(item == null) return false;
+    public void deleteById(Long id) {
+        Item item = itemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
 
         itemRepository.delete(item);
-        return true;
     }
 
     @Override
     public Item updateById(Long id, Item itemDetails) {
-        Item item = itemRepository.findById(id).orElse(null);
-        if(item==null) return null;
+        Item item = itemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
 
         itemDetails.setId(item.getId());
         itemRepository.save(itemDetails);

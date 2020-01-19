@@ -2,6 +2,7 @@ package pw.react.flatly.flatlybackend.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pw.react.flatly.flatlybackend.exception.ItemNotFoundException;
 import pw.react.flatly.flatlybackend.model.Item;
 import pw.react.flatly.flatlybackend.model.ItemPhoto;
 import pw.react.flatly.flatlybackend.repository.ItemPhotoRepository;
@@ -27,7 +28,7 @@ public class ItemPhotoServiceImpl implements ItemPhotoService {
 
     @Override
     public ItemPhoto saveItemPhoto(Long id, byte[] photo) {
-        Item item = itemRepository.findById(id).orElse(null);
+        Item item = itemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
 
         ItemPhoto itemPhoto = new ItemPhoto();
         itemPhoto.setItem(item);

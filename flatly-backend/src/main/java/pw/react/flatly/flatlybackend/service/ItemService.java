@@ -14,7 +14,7 @@ public interface ItemService {
 
     Item findById(Long id);
 
-    boolean deleteById(Long id);
+    void deleteById(Long id);
 
     Item updateById(Long id, Item itemDetails);
 }

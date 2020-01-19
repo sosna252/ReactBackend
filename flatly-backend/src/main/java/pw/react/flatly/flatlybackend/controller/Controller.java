@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pw.react.flatly.flatlybackend.exception.UserNotFoundException;
 import pw.react.flatly.flatlybackend.model.Booking;
 import pw.react.flatly.flatlybackend.model.Item;
 import pw.react.flatly.flatlybackend.model.ItemPhoto;
@@ -81,11 +82,9 @@ public class Controller {
     }
 
     @PostMapping(path = "/login")
-    public ResponseEntity login(@RequestBody LoginData loginData) {
-        UUID uuid = userService.login(loginData.getLogin(), loginData.getPassword());
+    public ResponseEntity login(@RequestBody LoginData loginData) throws UserNotFoundException {
 
-        if(uuid!=null) return ResponseEntity.ok(uuid);
-        else return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("something went wrong");
+        return ResponseEntity.ok(userService.login(loginData.getLogin(), loginData.getPassword()));
     }
 
     // 3 - Adding new item
@@ -107,17 +106,14 @@ public class Controller {
             @RequestParam(required = false) String city,
             @RequestParam(required = false) Integer people,
             @RequestParam(required = false) Long authorId) {
-        List<Item> items =  itemService.findByParams(dateFrom, dateTo, city, people, authorId);
 
-        if(items!=null) return ResponseEntity.ok(items);
-        else return ResponseEntity.status(HttpStatus.FORBIDDEN).body("something went wrong");
+        return ResponseEntity.ok(itemService.findByParams(dateFrom, dateTo, city, people, authorId));
     }
 
     @GetMapping(path = "/items/{id}/vacant")
     public ResponseEntity getVacantById(@PathVariable("id") Long id) {
-        List<List<LocalDate>> dates =  itemService.findVacantById(id);
 
-        return ResponseEntity.ok(dates);
+        return ResponseEntity.ok(itemService.findVacantById(id));
     }
 
     // 5 - Get specific item
@@ -134,30 +130,24 @@ public class Controller {
 
     @DeleteMapping(path = "/item/{id}")
     public ResponseEntity deleteItem(@PathVariable("id") Long id) {
-        if(itemService.deleteById(id)) return ResponseEntity.ok("Item deleted");
-        else return ResponseEntity.status(HttpStatus.FORBIDDEN).body("something went wrong");
+        itemService.deleteById(id);
+        return ResponseEntity.ok("Item deleted");
     }
 
     // 7 - Update specific item
 
     @PutMapping(path = "/item/{id}")
     public ResponseEntity updateItem(@PathVariable("id") Long id, @RequestBody Item itemDetails) {
-        Item item = itemService.updateById(id, itemDetails);
 
-        if(item==null) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("something went wrong");
-
-        return ResponseEntity.ok(item);
+        return ResponseEntity.ok(itemService.updateById(id, itemDetails));
     }
 
     // 8 - Book specific item
 
     @PostMapping(path = "/book/{item_id}")
     public ResponseEntity postBooking(@PathVariable("id") Long item_id, @RequestBody Booking booking) {
-        Booking newBooking = bookingService.addBooking(item_id, booking);
 
-        if(newBooking==null) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("something went wrong");
-
-        return ResponseEntity.ok(newBooking);
+        return ResponseEntity.ok(bookingService.addBooking(item_id, booking));
     }
 
     // 9 - Release specific item
@@ -165,8 +155,6 @@ public class Controller {
     @DeleteMapping(path = "/cancel/{id}")
     public ResponseEntity deleteBooking(@PathVariable("id") Long id) {
         Booking booking = bookingService.deleteBooking(id);
-
-        if(booking == null) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("something went wrong");
 
         return ResponseEntity.ok(booking);
     }

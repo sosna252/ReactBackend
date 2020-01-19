@@ -2,6 +2,8 @@ package pw.react.flatly.flatlybackend.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pw.react.flatly.flatlybackend.exception.ItemNotFoundException;
+import pw.react.flatly.flatlybackend.exception.ParamsMismatchException;
 import pw.react.flatly.flatlybackend.model.Booking;
 import pw.react.flatly.flatlybackend.model.Item;
 import pw.react.flatly.flatlybackend.repository.BookingRepository;
@@ -22,14 +24,20 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking addBooking(Long item_id, Booking booking) {
-        Item item = itemRepository.findById(item_id).orElse(null);
-        if(item==null) return null;
+        if(booking.getStart_date().compareTo(booking.getEnd_date())>0) {
+            throw new ParamsMismatchException("Data rozpoczęcia nie może być późniejsza niż zakończenia");
+        }
+        Item item = itemRepository.findById(item_id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
 
-        if(item.getStart_date_time().compareTo(booking.getStart_date())>0 || item.getEnd_date_time().compareTo(booking.getEnd_date())<0) return null;
+        if(item.getStart_date_time().compareTo(booking.getStart_date())>0 || item.getEnd_date_time().compareTo(booking.getEnd_date())<0) {
+            throw new ParamsMismatchException("Mieszkanie nie jest wtedy dostępne");
+        }
 
         List<Booking> itemBookings = item.getBookings();
         for(Booking itemBooking : itemBookings) {
-            if(!(itemBooking.getStart_date().compareTo(booking.getEnd_date())<0 && itemBooking.getEnd_date().compareTo(booking.getStart_date())<0)) return null;
+            if(!(itemBooking.getStart_date().compareTo(booking.getEnd_date())<0 && itemBooking.getEnd_date().compareTo(booking.getStart_date())<0)) {
+                throw new ParamsMismatchException("Mieszkanie nie jest wtedy dostępne");
+            }
         }
 
         bookingRepository.save(booking);
@@ -38,8 +46,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking deleteBooking(Long id) {
-        Booking booking = bookingRepository.findById(id).orElse(null);
-        if(booking==null) return null;
+        Booking booking = bookingRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
 
         bookingRepository.delete(booking);
         return booking;
