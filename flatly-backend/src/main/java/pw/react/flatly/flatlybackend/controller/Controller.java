@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pw.react.flatly.flatlybackend.model.Booking;
 import pw.react.flatly.flatlybackend.model.Item;
 import pw.react.flatly.flatlybackend.model.ItemPhoto;
 import pw.react.flatly.flatlybackend.model.User;
@@ -80,27 +81,27 @@ public class Controller {
     }
 
     @PostMapping(path = "/login")
-    public ResponseEntity<UUID> login(@RequestBody LoginData loginData) {
+    public ResponseEntity login(@RequestBody LoginData loginData) {
         UUID uuid = userService.login(loginData.getLogin(), loginData.getPassword());
 
-        if(uuid!=null) return new ResponseEntity(uuid, HttpStatus.OK);
-        else return new ResponseEntity("wrong login or password", HttpStatus.UNAUTHORIZED);
+        if(uuid!=null) return ResponseEntity.ok(uuid);
+        else return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("something went wrong");
     }
 
     // 3 - Adding new item
 
     @PostMapping(path = "/items")
-    public ResponseEntity<Item> addItem(@RequestBody Item item) {
+    public ResponseEntity addItem(@RequestBody Item item) {
         Item savedItem = itemService.save(item);
 
-        if(savedItem!=null) return new ResponseEntity(savedItem, HttpStatus.OK);
-        else return new ResponseEntity("something went wrong", HttpStatus.FORBIDDEN);
+        if(savedItem!=null) return ResponseEntity.ok(savedItem);
+        else return ResponseEntity.status(HttpStatus.FORBIDDEN).body("something went wrong");
     }
 
     // 4 - Get all items
 
     @GetMapping(path = "/items")
-    public ResponseEntity<List<Item>> getItems(
+    public ResponseEntity getItems(
             @RequestParam(required = false) LocalDate dateFrom,
             @RequestParam(required = false) LocalDate dateTo,
             @RequestParam(required = false) String city,
@@ -108,34 +109,68 @@ public class Controller {
             @RequestParam(required = false) Long authorId) {
         List<Item> items =  itemService.findByParams(dateFrom, dateTo, city, people, authorId);
 
-        if(items!=null) return new ResponseEntity(items, HttpStatus.OK);
-        else return new ResponseEntity("something went wrong", HttpStatus.FORBIDDEN);
+        if(items!=null) return ResponseEntity.ok(items);
+        else return ResponseEntity.status(HttpStatus.FORBIDDEN).body("something went wrong");
     }
 
     @GetMapping(path = "/items/{id}/vacant")
-    public ResponseEntity<List<List<LocalDate>>> getVacantById(@PathVariable("id") Long id) {
+    public ResponseEntity getVacantById(@PathVariable("id") Long id) {
         List<List<LocalDate>> dates =  itemService.findVacantById(id);
 
-        return new ResponseEntity(dates, HttpStatus.OK);
+        return ResponseEntity.ok(dates);
     }
 
     // 5 - Get specific item
 
     @GetMapping(path = "/items/{id}")
-    public ResponseEntity<Item> getItem(@PathVariable("id") Long id) {
+    public ResponseEntity getItem(@PathVariable("id") Long id) {
         Item item = itemService.findById(id);
 
-        if(item!=null) return new ResponseEntity(item, HttpStatus.OK);
-        else return new ResponseEntity("", HttpStatus.FORBIDDEN);
+        if(item!=null) return ResponseEntity.ok(item);
+        else return ResponseEntity.status(HttpStatus.FORBIDDEN).body("something went wrong");
     }
 
     // 6 - Delete specific item
 
     @DeleteMapping(path = "/item/{id}")
     public ResponseEntity deleteItem(@PathVariable("id") Long id) {
-        if(itemService.deleteById(id)) return new ResponseEntity("Item deleted", HttpStatus.OK);
-        else return new ResponseEntity("something went wrong", HttpStatus.FORBIDDEN);
+        if(itemService.deleteById(id)) return ResponseEntity.ok("Item deleted");
+        else return ResponseEntity.status(HttpStatus.FORBIDDEN).body("something went wrong");
     }
+
+    // 7 - Update specific item
+
+    @PutMapping(path = "/item/{id}")
+    public ResponseEntity updateItem(@PathVariable("id") Long id, @RequestBody Item itemDetails) {
+        Item item = itemService.updateById(id, itemDetails);
+
+        if(item==null) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("something went wrong");
+
+        return ResponseEntity.ok(item);
+    }
+
+    // 8 - Book specific item
+
+    @PostMapping(path = "/book/{item_id}")
+    public ResponseEntity postBooking(@PathVariable("id") Long item_id, @RequestBody Booking booking) {
+        Booking newBooking = bookingService.addBooking(item_id, booking);
+
+        if(newBooking==null) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("something went wrong");
+
+        return ResponseEntity.ok(newBooking);
+    }
+
+    // 9 - Release specific item
+
+    @DeleteMapping(path = "/cancel/{id}")
+    public ResponseEntity deleteBooking(@PathVariable("id") Long id) {
+        Booking booking = bookingService.deleteBooking(id);
+
+        if(booking == null) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("something went wrong");
+
+        return ResponseEntity.ok(booking);
+    }
+
 
 
 

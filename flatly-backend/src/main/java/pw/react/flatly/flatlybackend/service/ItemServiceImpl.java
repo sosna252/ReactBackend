@@ -92,4 +92,15 @@ public class ItemServiceImpl implements ItemService {
         return true;
     }
 
+    @Override
+    public Item updateById(Long id, Item itemDetails) {
+        Item item = itemRepository.findById(id).orElse(null);
+        if(item==null) return null;
+
+        itemDetails.setId(item.getId());
+        itemRepository.save(itemDetails);
+
+        return itemDetails;
+    }
+
 }
