@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS public.bookings
+DROP TABLE IF EXISTS public.bookings;
 CREATE TABLE public.bookings (
     id bigint NOT NULL,
     item_id bigint NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE public.bookings (
 );
 ALTER TABLE public.bookings OWNER TO postgres;
 
-DROP SEQUENCE IF EXISTS public.bookings_id_seq
+DROP SEQUENCE IF EXISTS public.bookings_id_seq;
 CREATE SEQUENCE public.bookings_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -42,7 +42,7 @@ CREATE SEQUENCE public.item_photos_id_seq
 ALTER TABLE public.item_photos_id_seq OWNER TO postgres;
 ALTER SEQUENCE public.item_photos_id_seq OWNED BY public.item_photos.id;
 
-DROP TABLE IF EXISTS public.items
+DROP TABLE IF EXISTS public.items;
 CREATE TABLE public.items (
     id bigint NOT NULL,
     author_id bigint NOT NULL,
@@ -50,7 +50,9 @@ CREATE TABLE public.items (
     end_date_time date NOT NULL,
     title text NOT NULL,
     description text NOT NULL,
+    photo_id int NOT NULL,
     room_number integer NOT NULL,
+    beds integer NOT NULL,
     price numeric NOT NULL,
     rating numeric NOT NULL,
     city text NOT NULL,
@@ -59,7 +61,7 @@ CREATE TABLE public.items (
 );
 ALTER TABLE public.items OWNER TO postgres;
 
-DROP SEQUENCE IF EXISTS public.items_id_seq
+DROP SEQUENCE IF EXISTS public.items_id_seq;
 CREATE SEQUENCE public.items_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -70,7 +72,7 @@ CREATE SEQUENCE public.items_id_seq
 ALTER TABLE public.items_id_seq OWNER TO postgres;
 ALTER SEQUENCE public.items_id_seq OWNED BY public.items.id;
 
-DROP TABLE IF EXISTS public.users
+DROP TABLE IF EXISTS public.users;
 CREATE TABLE public.users (
     id bigint NOT NULL,
     login text NOT NULL,
@@ -81,7 +83,7 @@ CREATE TABLE public.users (
 );
 ALTER TABLE public.users OWNER TO postgres;
 
-DROP SEQUENCE IF EXISTS public.users_id_seq
+DROP SEQUENCE IF EXISTS public.users_id_seq;
 CREATE SEQUENCE public.users_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -119,3 +121,11 @@ ALTER TABLE ONLY public.bookings
 
 ALTER TABLE ONLY public.items
     ADD CONSTRAINT items_author_id_fkey FOREIGN KEY (author_id) REFERENCES public.users(id);
+
+
+ALTER TABLE ONLY public.items
+    ADD CONSTRAINT items_photo_id_fkey FOREIGN KEY (photo_id) REFERENCES public.item_photos(id);
+
+
+ALTER TABLE ONLY public.item_photos
+    ADD CONSTRAINT item_photos_item_id_fkey FOREIGN KEY (item_id) REFERENCES public.items(id);
