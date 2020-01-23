@@ -1,6 +1,10 @@
 package pw.react.flatly.flatlybackend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import pw.react.flatly.flatlybackend.utils.JsonLocalDateDeserializer;
+import pw.react.flatly.flatlybackend.utils.JsonLocalDateSerializer;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -21,9 +25,13 @@ public class Booking {
     private Item item;
 
     @Column
+    @JsonDeserialize(using = JsonLocalDateDeserializer.class)
+    @JsonSerialize(using = JsonLocalDateSerializer.class)
     private LocalDate start_date;
 
     @Column
+    @JsonDeserialize(using = JsonLocalDateDeserializer.class)
+    @JsonSerialize(using = JsonLocalDateSerializer.class)
     private LocalDate end_date;
 
     @Column
