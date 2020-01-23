@@ -171,4 +171,9 @@ public class Controller {
 
         return itemPhoto.getPhoto();
     }
+
+    @PostMapping(path = "/{id}/itemphoto")
+    public ItemPhoto saveItemPhoto(@PathVariable Long id, @RequestBody byte[] photo) {
+        return itemPhotoService.saveItemPhoto(id, photo);
+    }
 }
