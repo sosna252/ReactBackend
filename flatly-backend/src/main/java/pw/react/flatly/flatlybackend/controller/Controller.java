@@ -101,13 +101,16 @@ public class Controller {
 
     @GetMapping(path = "/items")
     public ResponseEntity getItems(
-            @RequestParam(required = false) LocalDate dateFrom,
-            @RequestParam(required = false) LocalDate dateTo,
+            @RequestParam(required = false) String dateFrom,
+            @RequestParam(required = false) String dateTo,
             @RequestParam(required = false) String city,
             @RequestParam(required = false) Integer people,
-            @RequestParam(required = false) Long authorId) {
+            @RequestParam(required = false) Long authorId,
 
-        return ResponseEntity.ok(itemService.findByParams(dateFrom, dateTo, city, people, authorId));
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String dir) {
+
+        return ResponseEntity.ok(itemService.findAll(dateFrom, dateTo, city, people, authorId, sort, dir));
     }
 
     @GetMapping(path = "/items/{id}/vacant")

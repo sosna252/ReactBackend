@@ -9,7 +9,7 @@ import java.util.UUID;
 public interface ItemService {
     Item save(Item item);
 
-    List<Item> findByParams(LocalDate dateFrom, LocalDate dateTo, String city, Integer people, Long authorId);
+    List<Item> findAll(String dateFrom, String dateTo, String city, Integer people, Long authorId, String sort, String dir);
     List<List<LocalDate>> findVacantById(Long id);
 
     Item findById(Long id);

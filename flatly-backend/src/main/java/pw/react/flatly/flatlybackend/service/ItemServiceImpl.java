@@ -10,6 +10,7 @@ import pw.react.flatly.flatlybackend.repository.ItemRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -29,34 +30,62 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> findByParams(LocalDate dateFrom, LocalDate dateTo, String city, Integer people, Long authorId) {
+    public List<Item> findAll(String dateFrom, String dateTo, String city, Integer people, Long authorId, String sort, String dir) {
 
-        if(dateFrom.compareTo(dateTo)>0) {
-            throw new ParamsMismatchException("Data rozpoczęcia nie może być późniejsza niż zakończenia");
+        LocalDate from = dateFrom!=null ? LocalDate.parse(dateFrom) : null;
+        LocalDate to = dateFrom!=null ? LocalDate.parse(dateTo) : null;
+
+        if(from!=null && to!=null) {
+            if(from.compareTo(to)>0) {
+                throw new ParamsMismatchException("Data rozpoczęcia nie może być późniejsza niż zakończenia");
+            }
         }
 
-        List<Item> items = itemRepository.findAll().stream()
+        return itemRepository.findAll().stream()
                 .filter(item -> {
 
-                    if(dateFrom==null && dateTo==null) return true;
+                    if(from==null && to==null) return true;
 
                     List<Booking> bookings = item.getBookings();
-                    LocalDate from = dateFrom!=null ? dateFrom : item.getStart_date_time();
-                    LocalDate to = dateTo!=null ? dateTo : item.getEnd_date_time();
+                    LocalDate itemFrom = from!=null ? from : item.getStart_date_time();
+                    LocalDate itemTo = to!=null ? to : item.getEnd_date_time();
 
 
                     for (Booking booking: bookings) {
-                        if(booking.getStart_date().compareTo(from)>=0 && booking.getStart_date().compareTo(to)<=0) return false;
+                        if(booking.getStart_date().compareTo(itemFrom)>=0 && booking.getStart_date().compareTo(itemTo)<=0) return false;
                     }
 
                     return true;
                 })
                 .filter(item -> city == null || city.equals(item.getCity()))
                 .filter(item -> people == null || people <= item.getBeds())
-                .filter(item -> authorId == null || authorId == item.getUser().getId())
+                .filter(item -> authorId == null || authorId.equals(item.getUser().getId()))
+                .sorted((i1, i2) -> {
+                    if(dir.equals("desc")) {
+                        switch (sort) {
+                            case "end-time":
+                                return i2.getEnd_date_time().compareTo((i1.getEnd_date_time()));
+                            case "price":
+                                return i2.getPrice().compareTo(i1.getPrice());
+                            case "rating":
+                                return i2.getRating().compareTo(i1.getRating());
+                            default:
+                                return i2.getStart_date_time().compareTo(i1.getStart_date_time());
+                        }
+                    } else {
+                        switch (sort) {
+                            case "end-time":
+                                return i1.getEnd_date_time().compareTo((i2.getEnd_date_time()));
+                            case "price":
+                                return i1.getPrice().compareTo(i2.getPrice());
+                            case "rating":
+                                return i1.getRating().compareTo(i2.getRating());
+                            default:
+                                return i1.getStart_date_time().compareTo(i2.getStart_date_time());
+                        }
+                    }
+                })
                 .collect(Collectors.toList());
-
-        return items;
     }
 
     @Override
