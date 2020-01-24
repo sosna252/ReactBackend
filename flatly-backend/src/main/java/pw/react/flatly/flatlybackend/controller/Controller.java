@@ -162,6 +162,13 @@ public class Controller {
         return ResponseEntity.ok(booking);
     }
 
+    // wszystkie rezerwacje danego autora
+
+    @GetMapping(path = "user/{id}/book")
+    public ResponseEntity getAllBooksByUserId(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(bookingService.findAllByUserId(id));
+    }
+
 
 
 

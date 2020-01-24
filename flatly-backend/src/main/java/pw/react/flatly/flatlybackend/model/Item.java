@@ -37,6 +37,7 @@ public class Item {
 
     @ElementCollection
     @OneToMany(mappedBy="item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Booking> bookings;
 
     @Column

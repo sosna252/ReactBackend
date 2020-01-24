@@ -4,22 +4,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pw.react.flatly.flatlybackend.exception.ItemNotFoundException;
 import pw.react.flatly.flatlybackend.exception.ParamsMismatchException;
+import pw.react.flatly.flatlybackend.exception.UserNotFoundException;
 import pw.react.flatly.flatlybackend.model.Booking;
 import pw.react.flatly.flatlybackend.model.Item;
+import pw.react.flatly.flatlybackend.model.User;
 import pw.react.flatly.flatlybackend.repository.BookingRepository;
 import pw.react.flatly.flatlybackend.repository.ItemRepository;
+import pw.react.flatly.flatlybackend.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class BookingServiceImpl implements BookingService {
     BookingRepository bookingRepository;
     ItemRepository itemRepository;
+    UserRepository userRepository;
 
     @Autowired
-    public BookingServiceImpl(BookingRepository bookingRepository, ItemRepository itemRepository) {
+    public BookingServiceImpl(BookingRepository bookingRepository, ItemRepository itemRepository, UserRepository userRepository) {
         this.bookingRepository = bookingRepository;
         this.itemRepository = itemRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -50,6 +56,19 @@ public class BookingServiceImpl implements BookingService {
 
         bookingRepository.delete(booking);
         return booking;
+    }
+
+    @Override
+    public List<Booking> findAllByUserId(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Nie znaleziono takiego użytkownika"));
+        List<Item> items = user.getItems();
+        List<Booking> bookings = new ArrayList<Booking>();
+
+        for(Item item: items) {
+            bookings.addAll(item.getBookings());
+        }
+
+        return bookings;
     }
 
 }
