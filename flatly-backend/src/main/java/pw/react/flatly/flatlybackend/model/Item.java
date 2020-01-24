@@ -51,10 +51,10 @@ public class Item {
     private ItemPhoto item_photo;
 
     @Column
-    private int room_number;
+    private Integer room_number;
 
     @Column
-    private int beds;
+    private Integer beds;
 
     @Column
     private BigDecimal price;
@@ -137,19 +137,19 @@ public class Item {
         this.item_photo = item_photo;
     }
 
-    public int getRoom_number() {
+    public Integer getRoom_number() {
         return room_number;
     }
 
-    public void setRoom_number(int room_number) {
+    public void setRoom_number(Integer room_number) {
         this.room_number = room_number;
     }
 
-    public int getBeds() {
+    public Integer getBeds() {
         return beds;
     }
 
-    public void setBeds(int beds) {
+    public void setBeds(Integer beds) {
         this.beds = beds;
     }
 

@@ -26,12 +26,12 @@ import java.util.UUID;
 @RequestMapping(path = "/")
 @CrossOrigin
 public class Controller {
-    UserService userService;
-    ItemService itemService;
-    BookingService bookingService;
-    ItemPhotoService itemPhotoService;
+    private UserService userService;
+    private ItemService itemService;
+    private BookingService bookingService;
+    private ItemPhotoService itemPhotoService;
 
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
     public Controller(UserService userService, ItemService itemService, BookingService bookingService, ItemPhotoService itemPhotoService, UserRepository userRepository) {
@@ -129,6 +129,19 @@ public class Controller {
         else return ResponseEntity.status(HttpStatus.FORBIDDEN).body("something went wrong");
     }
 
+    // Get specific booking
+
+    @GetMapping(path="book/{id}")
+    public ResponseEntity getBooking(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(bookingService.getBooking(id));
+    }
+
+    @GetMapping(path = "bookingdetails/{id}")
+    public ResponseEntity getBookingDetails(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(bookingService.getBookingDetails(id));
+    }
+
+
     // 6 - Delete specific item
 
     @DeleteMapping(path = "/item/{id}")
@@ -167,6 +180,11 @@ public class Controller {
     @GetMapping(path = "user/{id}/book")
     public ResponseEntity getAllBooksByUserId(@PathVariable("id") Long id) {
         return ResponseEntity.ok(bookingService.findAllByUserId(id));
+    }
+
+    @GetMapping(path="user/{id}/bookinglist")
+    public ResponseEntity getBookingList(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(bookingService.findAllBookingListByUserId(id));
     }
 
 

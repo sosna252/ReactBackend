@@ -2,24 +2,24 @@ package pw.react.flatly.flatlybackend.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pw.react.flatly.flatlybackend.exception.BookingNotFoundException;
 import pw.react.flatly.flatlybackend.exception.ItemNotFoundException;
 import pw.react.flatly.flatlybackend.exception.ParamsMismatchException;
 import pw.react.flatly.flatlybackend.exception.UserNotFoundException;
-import pw.react.flatly.flatlybackend.model.Booking;
-import pw.react.flatly.flatlybackend.model.Item;
-import pw.react.flatly.flatlybackend.model.User;
+import pw.react.flatly.flatlybackend.model.*;
 import pw.react.flatly.flatlybackend.repository.BookingRepository;
 import pw.react.flatly.flatlybackend.repository.ItemRepository;
 import pw.react.flatly.flatlybackend.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BookingServiceImpl implements BookingService {
-    BookingRepository bookingRepository;
-    ItemRepository itemRepository;
-    UserRepository userRepository;
+    private BookingRepository bookingRepository;
+    private ItemRepository itemRepository;
+    private UserRepository userRepository;
 
     @Autowired
     public BookingServiceImpl(BookingRepository bookingRepository, ItemRepository itemRepository, UserRepository userRepository) {
@@ -27,6 +27,22 @@ public class BookingServiceImpl implements BookingService {
         this.itemRepository = itemRepository;
         this.userRepository = userRepository;
     }
+
+
+    @Override
+    public Booking getBooking(Long id) {
+        return bookingRepository.findById(id).orElseThrow(() -> new BookingNotFoundException("Nie ma takiej rezerwacji"));
+    }
+
+    @Override
+    public BookingDetails getBookingDetails(Long id) {
+        Booking booking = bookingRepository.findById(id).orElseThrow(() -> new BookingNotFoundException("Nie ma takiej rezerwacji"));
+
+        return new BookingDetails(booking, booking.getItem());
+    }
+
+
+
 
     @Override
     public Booking addBooking(Long item_id, Booking booking) {
@@ -69,6 +85,19 @@ public class BookingServiceImpl implements BookingService {
         }
 
         return bookings;
+    }
+
+    @Override
+    public List<BookingList> findAllBookingListByUserId(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Nie znaleziono takiego użytkownika"));
+        List<Item> items = user.getItems();
+        List<BookingList> bookingsList = new ArrayList<BookingList>();
+
+        for(Item item: items) {
+            bookingsList.addAll(item.getBookings().stream().map(booking -> new BookingList(booking, item)).collect(Collectors.toList()));
+        }
+
+        return bookingsList;
     }
 
 }

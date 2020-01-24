@@ -44,7 +44,7 @@ public class Booking {
     private String email;
 
     @Column
-    private int people;
+    private Integer people;
 
     public Booking() {}
 
@@ -104,11 +104,11 @@ public class Booking {
         this.email = email;
     }
 
-    public int getPeople() {
+    public Integer getPeople() {
         return people;
     }
 
-    public void setPeople(int people) {
+    public void setPeople(Integer people) {
         this.people = people;
     }
 }
