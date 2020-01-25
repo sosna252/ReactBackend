@@ -18,7 +18,6 @@ import pw.react.flatly.flatlybackend.service.UserService;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -90,8 +89,8 @@ public class Controller {
     // 3 - Adding new item
 
     @PostMapping(path = "/items")
-    public ResponseEntity addItem(@RequestBody Item item) {
-        Item savedItem = itemService.save(item);
+    public ResponseEntity addItem(@RequestHeader UUID security_token, @RequestBody Item item) {
+        Item savedItem = itemService.save(security_token, item);
 
         if(savedItem!=null) return ResponseEntity.ok(savedItem);
         else return ResponseEntity.status(HttpStatus.FORBIDDEN).body("something went wrong");
@@ -101,6 +100,7 @@ public class Controller {
 
     @GetMapping(path = "/items")
     public ResponseEntity getItems(
+            @RequestHeader UUID security_token,
             @RequestParam(required = false) String dateFrom,
             @RequestParam(required = false) String dateTo,
             @RequestParam(required = false) String city,
@@ -110,20 +110,20 @@ public class Controller {
             @RequestParam(required = false) String sort,
             @RequestParam(required = false) String dir) {
 
-        return ResponseEntity.ok(itemService.findAll(dateFrom, dateTo, city, people, authorId, sort, dir));
+        return ResponseEntity.ok(itemService.findAll(security_token, dateFrom, dateTo, city, people, authorId, sort, dir));
     }
 
     @GetMapping(path = "/items/{id}/vacant")
-    public ResponseEntity getVacantById(@PathVariable("id") Long id) {
+    public ResponseEntity getVacantById(@RequestHeader UUID security_token, @PathVariable("id") Long id) {
 
-        return ResponseEntity.ok(itemService.findVacantById(id));
+        return ResponseEntity.ok(itemService.findVacantById(security_token, id));
     }
 
     // 5 - Get specific item
 
     @GetMapping(path = "/items/{id}")
-    public ResponseEntity getItem(@PathVariable("id") Long id) {
-        Item item = itemService.findById(id);
+    public ResponseEntity getItem(@RequestHeader UUID security_token, @PathVariable("id") Long id) {
+        Item item = itemService.findById(security_token, id);
 
         if(item!=null) return ResponseEntity.ok(item);
         else return ResponseEntity.status(HttpStatus.FORBIDDEN).body("something went wrong");
@@ -132,45 +132,45 @@ public class Controller {
     // Get specific booking
 
     @GetMapping(path="book/{id}")
-    public ResponseEntity getBooking(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(bookingService.getBooking(id));
+    public ResponseEntity getBooking(@RequestHeader UUID security_token, @PathVariable("id") Long id) {
+        return ResponseEntity.ok(bookingService.getBooking(security_token, id));
     }
 
     @GetMapping(path = "bookingdetails/{id}")
-    public ResponseEntity getBookingDetails(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(bookingService.getBookingDetails(id));
+    public ResponseEntity getBookingDetails(@RequestHeader UUID security_token, @PathVariable("id") Long id) {
+        return ResponseEntity.ok(bookingService.getBookingDetails(security_token, id));
     }
 
 
     // 6 - Delete specific item
 
     @DeleteMapping(path = "/item/{id}")
-    public ResponseEntity deleteItem(@PathVariable("id") Long id) {
-        itemService.deleteById(id);
+    public ResponseEntity deleteItem(@RequestHeader UUID security_token, @PathVariable("id") Long id) {
+        itemService.deleteById(security_token, id);
         return ResponseEntity.ok("Item deleted");
     }
 
     // 7 - Update specific item
 
     @PutMapping(path = "/item/{id}")
-    public ResponseEntity updateItem(@PathVariable("id") Long id, @RequestBody Item itemDetails) {
+    public ResponseEntity updateItem(@RequestHeader UUID security_token, @PathVariable("id") Long id, @RequestBody Item itemDetails) {
 
-        return ResponseEntity.ok(itemService.updateById(id, itemDetails));
+        return ResponseEntity.ok(itemService.updateById(security_token, id, itemDetails));
     }
 
     // 8 - Book specific item
 
     @PostMapping(path = "/book/{item_id}")
-    public ResponseEntity postBooking(@PathVariable("id") Long item_id, @RequestBody Booking booking) {
+    public ResponseEntity postBooking(@RequestHeader UUID security_token, @PathVariable("id") Long item_id, @RequestBody Booking booking) {
 
-        return ResponseEntity.ok(bookingService.addBooking(item_id, booking));
+        return ResponseEntity.ok(bookingService.addBooking(security_token, item_id, booking));
     }
 
     // 9 - Release specific item
 
     @DeleteMapping(path = "/cancel/{id}")
-    public ResponseEntity deleteBooking(@PathVariable("id") Long id) {
-        Booking booking = bookingService.deleteBooking(id);
+    public ResponseEntity deleteBooking(@RequestHeader UUID security_token, @PathVariable("id") Long id) {
+        Booking booking = bookingService.deleteBooking(security_token, id);
 
         return ResponseEntity.ok(booking);
     }
@@ -178,13 +178,13 @@ public class Controller {
     // wszystkie rezerwacje danego autora
 
     @GetMapping(path = "user/{id}/book")
-    public ResponseEntity getAllBooksByUserId(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(bookingService.findAllByUserId(id));
+    public ResponseEntity getAllBooksByUserId(@RequestHeader UUID security_token, @PathVariable("id") Long id) {
+        return ResponseEntity.ok(bookingService.findAllByUserId(security_token, id));
     }
 
     @GetMapping(path="user/{id}/bookinglist")
-    public ResponseEntity getBookingList(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(bookingService.findAllBookingListByUserId(id));
+    public ResponseEntity getBookingList(@RequestHeader UUID security_token, @PathVariable("id") Long id) {
+        return ResponseEntity.ok(bookingService.findAllBookingListByUserId(security_token, id));
     }
 
 
@@ -201,7 +201,7 @@ public class Controller {
     }
 
     @PostMapping(path = "/{id}/itemphoto")
-    public ItemPhoto saveItemPhoto(@PathVariable Long id, @RequestBody byte[] photo) {
-        return itemPhotoService.saveItemPhoto(id, photo);
+    public ItemPhoto saveItemPhoto(@RequestHeader UUID security_token, @PathVariable Long id, @RequestBody byte[] photo) {
+        return itemPhotoService.saveItemPhoto(security_token, id, photo);
     }
 }

@@ -13,6 +13,7 @@ import pw.react.flatly.flatlybackend.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,12 +31,14 @@ public class BookingServiceImpl implements BookingService {
 
 
     @Override
-    public Booking getBooking(Long id) {
+    public Booking getBooking(UUID security_token, Long id) {
+        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UserNotFoundException("Nie masz uprawnień"));
         return bookingRepository.findById(id).orElseThrow(() -> new BookingNotFoundException("Nie ma takiej rezerwacji"));
     }
 
     @Override
-    public BookingDetails getBookingDetails(Long id) {
+    public BookingDetails getBookingDetails(UUID security_token, Long id) {
+        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UserNotFoundException("Nie masz uprawnień"));
         Booking booking = bookingRepository.findById(id).orElseThrow(() -> new BookingNotFoundException("Nie ma takiej rezerwacji"));
 
         return new BookingDetails(booking, booking.getItem());
@@ -45,7 +48,8 @@ public class BookingServiceImpl implements BookingService {
 
 
     @Override
-    public Booking addBooking(Long item_id, Booking booking) {
+    public Booking addBooking(UUID security_token, Long item_id, Booking booking) {
+        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UserNotFoundException("Nie masz uprawnień"));
         if(booking.getStart_date().compareTo(booking.getEnd_date())>0) {
             throw new ParamsMismatchException("Data rozpoczęcia nie może być późniejsza niż zakończenia");
         }
@@ -67,7 +71,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Booking deleteBooking(Long id) {
+    public Booking deleteBooking(UUID security_token, Long id) {
+        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UserNotFoundException("Nie masz uprawnień"));
         Booking booking = bookingRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
 
         bookingRepository.delete(booking);
@@ -75,7 +80,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<Booking> findAllByUserId(Long id) {
+    public List<Booking> findAllByUserId(UUID security_token, Long id) {
+        userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UserNotFoundException("Nie masz uprawnień"));
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Nie znaleziono takiego użytkownika"));
         List<Item> items = user.getItems();
         List<Booking> bookings = new ArrayList<Booking>();
@@ -88,7 +94,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingList> findAllBookingListByUserId(Long id) {
+    public List<BookingList> findAllBookingListByUserId(UUID security_token, Long id) {
+        userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UserNotFoundException("Nie masz uprawnień"));
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Nie znaleziono takiego użytkownika"));
         List<Item> items = user.getItems();
         List<BookingList> bookingsList = new ArrayList<BookingList>();

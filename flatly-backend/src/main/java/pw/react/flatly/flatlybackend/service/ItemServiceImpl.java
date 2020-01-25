@@ -4,9 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pw.react.flatly.flatlybackend.exception.ItemNotFoundException;
 import pw.react.flatly.flatlybackend.exception.ParamsMismatchException;
+import pw.react.flatly.flatlybackend.exception.UserNotFoundException;
 import pw.react.flatly.flatlybackend.model.Booking;
 import pw.react.flatly.flatlybackend.model.Item;
+import pw.react.flatly.flatlybackend.model.User;
 import pw.react.flatly.flatlybackend.repository.ItemRepository;
+import pw.react.flatly.flatlybackend.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -17,20 +20,25 @@ import java.util.stream.Collectors;
 
 @Service
 public class ItemServiceImpl implements ItemService {
-    ItemRepository itemRepository;
+    private ItemRepository itemRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    public ItemServiceImpl(ItemRepository itemRepository) {
+    public ItemServiceImpl(ItemRepository itemRepository, UserRepository userRepository) {
         this.itemRepository = itemRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
-    public Item save(Item item) {
+    public Item save(UUID security_token, Item item) {
+        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UserNotFoundException("Nie masz uprawnień"));
         return itemRepository.save(item);
     }
 
     @Override
-    public List<Item> findAll(String dateFrom, String dateTo, String city, Integer people, Long authorId, String sort, String dir) {
+    public List<Item> findAll(UUID security_token, String dateFrom, String dateTo, String city, Integer people, Long authorId, String sort, String dir) {
+
+        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UserNotFoundException("Nie masz uprawnień"));
 
         LocalDate from = dateFrom!=null ? LocalDate.parse(dateFrom) : null;
         LocalDate to = dateFrom!=null ? LocalDate.parse(dateTo) : null;
@@ -89,9 +97,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<List<LocalDate>> findVacantById(Long id) {
-        Item item = itemRepository.findById(id).orElse(null);
-        if(item==null) return null;
+    public List<List<LocalDate>> findVacantById(UUID security_token, Long id) {
+        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UserNotFoundException("Nie masz uprawnień"));
+        Item item = itemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
 
         List<Booking> bookings = item.getBookings();
 
@@ -114,19 +122,22 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item findById(Long id) {
+    public Item findById(UUID security_token, Long id) {
+        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UserNotFoundException("Nie masz uprawnień"));
         return itemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(UUID security_token, Long id) {
+        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UserNotFoundException("Nie masz uprawnień"));
         Item item = itemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
 
         itemRepository.delete(item);
     }
 
     @Override
-    public Item updateById(Long id, Item itemDetails) {
+    public Item updateById(UUID security_token, Long id, Item itemDetails) {
+        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UserNotFoundException("Nie masz uprawnień"));
         Item item = itemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
 
         itemDetails.setId(item.getId());
