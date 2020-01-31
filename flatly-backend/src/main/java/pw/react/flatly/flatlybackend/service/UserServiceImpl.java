@@ -25,6 +25,6 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException("Login or password is incorrect");
         }
 
-        return user.getSecurity_token();
+        return user.getSecurityToken();
     }
 }

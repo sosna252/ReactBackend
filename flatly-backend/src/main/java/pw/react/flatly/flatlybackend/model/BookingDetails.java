@@ -2,7 +2,7 @@ package pw.react.flatly.flatlybackend.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.sun.deploy.security.BadCertificateDialog;
+//import com.sun.deploy.security.BadCertificateDialog;
 import pw.react.flatly.flatlybackend.utils.JsonLocalDateDeserializer;
 import pw.react.flatly.flatlybackend.utils.JsonLocalDateSerializer;
 

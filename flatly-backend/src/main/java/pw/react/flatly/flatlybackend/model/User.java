@@ -25,7 +25,7 @@ public class User {
     private String last_name;
 
     @Column
-    private UUID security_token;
+    private UUID securityToken;
 
     @ElementCollection
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -73,12 +73,12 @@ public class User {
         this.last_name = last_name;
     }
 
-    public UUID getSecurity_token() {
-        return security_token;
+    public UUID getSecurityToken() {
+        return securityToken;
     }
 
-    public void setSecurity_token(UUID security_token) {
-        this.security_token = security_token;
+    public void setSecurityToken(UUID security_token) {
+        this.securityToken = security_token;
     }
 
     public List<Item> getItems() {

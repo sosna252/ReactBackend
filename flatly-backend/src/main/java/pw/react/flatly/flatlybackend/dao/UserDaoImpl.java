@@ -40,7 +40,7 @@ public class UserDaoImpl implements UserDao {
                 .addValue("password", usr.getPassword())
                 .addValue("first_name", usr.getFirst_name())
                 .addValue("last_name", usr.getLast_name())
-                .addValue("security_token", usr.getSecurity_token());
+                .addValue("security_token", usr.getSecurityToken());
         template.update(sql,param, holder);
     }
 
@@ -54,7 +54,7 @@ public class UserDaoImpl implements UserDao {
                 .addValue("password", usr.getPassword())
                 .addValue("first_name", usr.getFirst_name())
                 .addValue("last_name", usr.getLast_name())
-                .addValue("security_token", usr.getSecurity_token());
+                .addValue("security_token", usr.getSecurityToken());
         template.update(sql,param, holder);
     }
 
@@ -67,7 +67,7 @@ public class UserDaoImpl implements UserDao {
         map.put("password", usr.getPassword());
         map.put("first_name", usr.getFirst_name());
         map.put("last_name", usr.getLast_name());
-        map.put("security_token", usr.getSecurity_token());
+        map.put("security_token", usr.getSecurityToken());
 
         template.execute(sql,map,new PreparedStatementCallback<Object>() {
             @Override

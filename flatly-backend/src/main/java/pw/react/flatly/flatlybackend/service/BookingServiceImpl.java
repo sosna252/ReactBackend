@@ -79,7 +79,7 @@ public class BookingServiceImpl implements BookingService {
         return booking;
     }
 
-    @Override
+    /*@Override
     public List<Booking> findAllByUserId(UUID security_token, Long id) {
         userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UserNotFoundException("Nie masz uprawnień"));
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Nie znaleziono takiego użytkownika"));
@@ -97,6 +97,34 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingList> findAllBookingListByUserId(UUID security_token, Long id) {
         userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UserNotFoundException("Nie masz uprawnień"));
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Nie znaleziono takiego użytkownika"));
+        List<Item> items = user.getItems();
+        List<BookingList> bookingsList = new ArrayList<BookingList>();
+
+        for(Item item: items) {
+            bookingsList.addAll(item.getBookings().stream().map(booking -> new BookingList(booking, item)).collect(Collectors.toList()));
+        }
+
+        return bookingsList;
+    }*/
+
+    @Override
+    public List<Booking> findAllByToken(UUID security_token) {
+        userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UserNotFoundException("Nie masz uprawnień"));
+        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UserNotFoundException("Nie znaleziono takiego użytkownika"));
+        List<Item> items = user.getItems();
+        List<Booking> bookings = new ArrayList<Booking>();
+
+        for(Item item: items) {
+            bookings.addAll(item.getBookings());
+        }
+
+        return bookings;
+    }
+
+    @Override
+    public List<BookingList> findAllBookingListByToken(UUID security_token) {
+        userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UserNotFoundException("Nie masz uprawnień"));
+        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UserNotFoundException("Nie znaleziono takiego użytkownika"));
         List<Item> items = user.getItems();
         List<BookingList> bookingsList = new ArrayList<BookingList>();
 
