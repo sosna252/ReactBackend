@@ -90,7 +90,7 @@ public class Controller {
     // 3 - Adding new item
 
     @PostMapping(path = "/items")
-    public ResponseEntity addItem(@RequestParam String securityTokenValue, @RequestBody Item item) {
+    public ResponseEntity addItem(@RequestHeader String securityTokenValue, @RequestBody Item item) {
         UUID securityToken = UUID.fromString(securityTokenValue);
         Item savedItem = itemService.save(securityToken, item);
 
