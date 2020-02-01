@@ -28,7 +28,7 @@ public class User {
     private UUID securityToken;
 
     @ElementCollection
-    @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy="user", cascade = CascadeType.ALL)
     private List<Item> items;
 
     public User() {}

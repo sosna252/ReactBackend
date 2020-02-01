@@ -2,7 +2,7 @@ package pw.react.flatly.flatlybackend.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pw.react.flatly.flatlybackend.exception.UserNotFoundException;
+import pw.react.flatly.flatlybackend.exception.UnauthorizedException;
 import pw.react.flatly.flatlybackend.model.User;
 import pw.react.flatly.flatlybackend.repository.UserRepository;
 
@@ -10,9 +10,9 @@ import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
-    UserRepository userRepository;
 
-    @Autowired
+    private UserRepository userRepository;
+
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByLogin(login).orElse(null);
 
         if(user==null || !user.getPassword().equals(password)) {
-            throw new UserNotFoundException("Login or password is incorrect");
+            throw new UnauthorizedException("Login or password is incorrect");
         }
 
         return user.getSecurityToken();

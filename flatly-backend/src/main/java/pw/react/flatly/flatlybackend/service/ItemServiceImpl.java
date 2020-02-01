@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pw.react.flatly.flatlybackend.exception.ItemNotFoundException;
 import pw.react.flatly.flatlybackend.exception.ParamsMismatchException;
-import pw.react.flatly.flatlybackend.exception.UserNotFoundException;
+import pw.react.flatly.flatlybackend.exception.UnauthorizedException;
 import pw.react.flatly.flatlybackend.model.Booking;
 import pw.react.flatly.flatlybackend.model.Item;
 import pw.react.flatly.flatlybackend.model.User;
@@ -12,6 +12,7 @@ import pw.react.flatly.flatlybackend.repository.ItemRepository;
 import pw.react.flatly.flatlybackend.repository.UserRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -23,7 +24,6 @@ public class ItemServiceImpl implements ItemService {
     private ItemRepository itemRepository;
     private UserRepository userRepository;
 
-    @Autowired
     public ItemServiceImpl(ItemRepository itemRepository, UserRepository userRepository) {
         this.itemRepository = itemRepository;
         this.userRepository = userRepository;
@@ -31,45 +31,36 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item save(UUID security_token, Item item) {
-        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UserNotFoundException("Nie masz uprawnień"));
+        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("Nie masz uprawnień"));
+
+        if(item.getStart_date_time().compareTo(item.getEnd_date_time())>0) {
+            throw new ParamsMismatchException("Data rozpoczęcia nie może być późniejsza niż zakończenia");
+        }
+
+        item.setUser(user);
         return itemRepository.save(item);
     }
 
     @Override
     public List<Item> findAll(UUID security_token, String dateFrom, String dateTo, String city, Integer people, Long authorId, String sort, String dir) {
 
-        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UserNotFoundException("Nie masz uprawnień"));
+        userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("Nie masz uprawnień"));
 
-        LocalDate from = dateFrom!=null ? LocalDate.parse(dateFrom) : null;
-        LocalDate to = dateFrom!=null ? LocalDate.parse(dateTo) : null;
-
-        if(from!=null && to!=null) {
-            if(from.compareTo(to)>0) {
+        if(dateFrom!=null && dateTo!=null) {
+            if(LocalDate.parse(dateFrom).isAfter(LocalDate.parse(dateTo))) {
                 throw new ParamsMismatchException("Data rozpoczęcia nie może być późniejsza niż zakończenia");
             }
         }
 
         return itemRepository.findAll().stream()
-                .filter(item -> {
-
-                    if(from==null && to==null) return true;
-
-                    List<Booking> bookings = item.getBookings();
-                    LocalDate itemFrom = from!=null ? from : item.getStart_date_time();
-                    LocalDate itemTo = to!=null ? to : item.getEnd_date_time();
-
-
-                    for (Booking booking: bookings) {
-                        if(booking.getStart_date().compareTo(itemFrom)>=0 && booking.getStart_date().compareTo(itemTo)<=0) return false;
-                    }
-
-                    return true;
-                })
+                .filter(item -> dateFrom == null || LocalDate.parse(dateFrom).isBefore(item.getStart_date_time()))
+                .filter(item -> dateTo == null || LocalDate.parse(dateTo).isAfter(item.getEnd_date_time()))
                 .filter(item -> city == null || city.equals(item.getCity()))
                 .filter(item -> people == null || people <= item.getBeds())
                 .filter(item -> authorId == null || authorId.equals(item.getUser().getId()))
                 .sorted((i1, i2) -> {
-                    if(dir.equals("desc")) {
+                    if(dir!=null && dir.equals("desc")) {
+                        if(sort==null) return i2.getStart_date_time().compareTo(i1.getStart_date_time());
                         switch (sort) {
                             case "end-time":
                                 return i2.getEnd_date_time().compareTo((i1.getEnd_date_time()));
@@ -81,6 +72,7 @@ public class ItemServiceImpl implements ItemService {
                                 return i2.getStart_date_time().compareTo(i1.getStart_date_time());
                         }
                     } else {
+                        if(sort==null) return i2.getStart_date_time().compareTo(i1.getStart_date_time());
                         switch (sort) {
                             case "end-time":
                                 return i1.getEnd_date_time().compareTo((i2.getEnd_date_time()));
@@ -97,9 +89,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<List<LocalDate>> findVacantById(UUID security_token, Long id) {
-        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UserNotFoundException("Nie masz uprawnień"));
-        Item item = itemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
+    public List<List<LocalDate>> findVacantById(UUID security_token, Long item_id) {
+        userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("Nie masz uprawnień"));
+        Item item = itemRepository.findById(item_id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
 
         List<Booking> bookings = item.getBookings();
 
@@ -122,28 +114,49 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item findById(UUID security_token, Long id) {
-        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UserNotFoundException("Nie masz uprawnień"));
-        return itemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
+    public Item findById(UUID security_token, Long item_id) {
+        userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("Nie masz uprawnień"));
+        return itemRepository.findById(item_id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
     }
 
     @Override
-    public void deleteById(UUID security_token, Long id) {
-        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UserNotFoundException("Nie masz uprawnień"));
-        Item item = itemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
+    public void deleteById(UUID security_token, Long item_id) {
+        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("Nie masz uprawnień"));
+        Item item = itemRepository.findById(item_id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
+
+        if(item.getUser()!=user) throw new UnauthorizedException("To mieszkanie nie należy do ciebie");
 
         itemRepository.delete(item);
     }
 
     @Override
-    public Item updateById(UUID security_token, Long id, Item itemDetails) {
-        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UserNotFoundException("Nie masz uprawnień"));
-        Item item = itemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
+    public Item updateById(UUID security_token, Long item_id, Item itemDetails) {
+        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("Nie masz uprawnień"));
+        Item item = itemRepository.findById(item_id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
 
-        itemDetails.setId(item.getId());
-        itemRepository.save(itemDetails);
+        if(item.getUser()!=user) throw new UnauthorizedException("To mieszkanie nie należy do ciebie");
 
-        return itemDetails;
+        item.setValues(itemDetails);
+        return itemRepository.save(item);
+    }
+
+    @Override
+    public byte[] findItemPhotoByItemId(Long item_id) {
+        Item item = itemRepository.findById(item_id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
+
+        return item.getPhoto();
+    }
+
+    @Override
+    public Item saveItemPhoto(UUID security_token, Long item_id, byte[] photo) {
+        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("Nie masz uprawnień"));
+        Item item = itemRepository.findById(item_id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
+
+        if(item.getUser()!=user) throw new UnauthorizedException("To mieszkanie nie należy do ciebie");
+
+        item.setPhoto(photo);
+
+        return itemRepository.save(item);
     }
 
 }

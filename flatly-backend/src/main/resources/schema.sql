@@ -45,19 +45,19 @@ ALTER SEQUENCE public.item_photos_id_seq OWNED BY public.item_photos.id;
 DROP TABLE IF EXISTS public.items;
 CREATE TABLE public.items (
     id bigint NOT NULL,
-    author_id bigint NOT NULL,
     start_date_time date NOT NULL,
     end_date_time date NOT NULL,
     title text NOT NULL,
     description text NOT NULL,
-    photo_id int NOT NULL,
     room_number integer NOT NULL,
     beds integer NOT NULL,
     price numeric NOT NULL,
     rating numeric NOT NULL,
     city text NOT NULL,
     address text NOT NULL,
-    country text NOT NULL
+    country text NOT NULL,
+    photo bytea,
+    author_id bigint
 );
 ALTER TABLE public.items OWNER TO postgres;
 

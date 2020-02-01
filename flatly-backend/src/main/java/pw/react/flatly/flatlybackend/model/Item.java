@@ -20,7 +20,7 @@ public class Item {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name="author_id")
     @JsonIgnore
     private User user;
@@ -36,7 +36,7 @@ public class Item {
     private LocalDate end_date_time;
 
     @ElementCollection
-    @OneToMany(mappedBy="item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy="item", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Booking> bookings;
 
@@ -46,9 +46,8 @@ public class Item {
     @Column
     private String description;
 
-    @OneToOne(mappedBy = "item")
     @JsonIgnore
-    private ItemPhoto item_photo;
+    private byte[] photo;
 
     @Column
     private Integer room_number;
@@ -72,6 +71,21 @@ public class Item {
     private String country;
 
     public Item() {}
+
+    public void setValues(Item item) {
+        this.start_date_time = item.getStart_date_time();
+        this.end_date_time = item.end_date_time;
+        this.title = item.getTitle();
+        this.description = item.getDescription();
+        this.room_number = item.getRoom_number();
+        this.beds = item.getBeds();
+        this.price = item.getPrice();
+        this.rating = item.getRating();
+        this.address = item.getAddress();
+        this.city = item.getCity();
+        this.country = item.getCountry();
+
+    }
 
     public Long getId() {
         return id;
@@ -129,12 +143,12 @@ public class Item {
         this.description = description;
     }
 
-    public ItemPhoto getItem_photo() {
-        return item_photo;
+    public byte[] getPhoto() {
+        return photo;
     }
 
-    public void setItem_photo(ItemPhoto item_photo) {
-        this.item_photo = item_photo;
+    public void setPhoto(byte[] photo) {
+        this.photo = photo;
     }
 
     public Integer getRoom_number() {

@@ -41,7 +41,6 @@ public class ItemDaoImpl implements ItemDao {
                 .addValue("end_date_time", it.getEnd_date_time())
                 .addValue("title", it.getTitle())
                 .addValue("description", it.getDescription())
-                .addValue("photo_id", it.getItem_photo().getId())
                 .addValue("room_number", it.getRoom_number())
                 .addValue("beds", it.getBeds())
                 .addValue("price", it.getPrice())
@@ -63,7 +62,6 @@ public class ItemDaoImpl implements ItemDao {
                 .addValue("end_date_time", it.getEnd_date_time())
                 .addValue("title", it.getTitle())
                 .addValue("description", it.getDescription())
-                .addValue("photo_id", it.getItem_photo().getId())
                 .addValue("room_number", it.getRoom_number())
                 .addValue("beds", it.getBeds())
                 .addValue("price", it.getPrice())
@@ -84,7 +82,6 @@ public class ItemDaoImpl implements ItemDao {
         map.put("end_date_time", it.getEnd_date_time());
         map.put("title", it.getTitle());
         map.put("description", it.getDescription());
-        map.put("photo_id", it.getItem_photo().getId());
         map.put("room_number", it.getRoom_number());
         map.put("beds", it.getBeds());
         map.put("price", it.getPrice());

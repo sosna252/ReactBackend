@@ -1,19 +1,14 @@
 package pw.react.flatly.flatlybackend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pw.react.flatly.flatlybackend.exception.UserNotFoundException;
 import pw.react.flatly.flatlybackend.model.Booking;
 import pw.react.flatly.flatlybackend.model.Item;
-import pw.react.flatly.flatlybackend.model.ItemPhoto;
 import pw.react.flatly.flatlybackend.model.User;
 import pw.react.flatly.flatlybackend.repository.UserRepository;
 import pw.react.flatly.flatlybackend.service.BookingService;
-import pw.react.flatly.flatlybackend.service.ItemPhotoService;
 import pw.react.flatly.flatlybackend.service.ItemService;
 import pw.react.flatly.flatlybackend.service.UserService;
 
@@ -29,17 +24,14 @@ public class Controller {
     private UserService userService;
     private ItemService itemService;
     private BookingService bookingService;
-    private ItemPhotoService itemPhotoService;
 
     private UserRepository userRepository;
 
     @Autowired
-    public Controller(UserService userService, ItemService itemService, BookingService bookingService, ItemPhotoService itemPhotoService, UserRepository userRepository) {
+    public Controller(UserService userService, ItemService itemService, BookingService bookingService, UserRepository userRepository) {
         this.userService = userService;
         this.itemService = itemService;
         this.bookingService = bookingService;
-
-        this.itemPhotoService = itemPhotoService;
 
         this.userRepository = userRepository;
     }
@@ -62,16 +54,8 @@ public class Controller {
             return login;
         }
 
-        public void setLogin(String login) {
-            this.login = login;
-        }
-
         public String getPassword() {
             return password;
-        }
-
-        public void setPassword(String password) {
-            this.password = password;
         }
     }
 
@@ -82,7 +66,7 @@ public class Controller {
     }
 
     @PostMapping(path = "/login")
-    public ResponseEntity login(@RequestBody LoginData loginData) throws UserNotFoundException {
+    public ResponseEntity login(@RequestBody LoginData loginData) {
 
         return ResponseEntity.ok(userService.login(loginData.getLogin(), loginData.getPassword()));
     }
@@ -92,10 +76,7 @@ public class Controller {
     @PostMapping(path = "/items")
     public ResponseEntity addItem(@RequestHeader String securityTokenValue, @RequestBody Item item) {
         UUID securityToken = UUID.fromString(securityTokenValue);
-        Item savedItem = itemService.save(securityToken, item);
-
-        if(savedItem!=null) return ResponseEntity.ok(savedItem);
-        else return ResponseEntity.status(HttpStatus.FORBIDDEN).body("something went wrong");
+        return ResponseEntity.ok(itemService.save(securityToken, item));
     }
 
     // 4 - Get all items
@@ -116,70 +97,65 @@ public class Controller {
         return ResponseEntity.ok(itemService.findAll(securityToken, dateFrom, dateTo, city, people, authorId, sort, dir));
     }
 
-    @GetMapping(path = "/items/{id}/vacant")
-    public ResponseEntity getVacantById(@RequestHeader String securityTokenValue, @PathVariable("id") Long id) {
+    @GetMapping(path = "/items/{item_id}/vacant")
+    public ResponseEntity getVacantById(@RequestHeader String securityTokenValue, @PathVariable Long item_id) {
         UUID securityToken = UUID.fromString(securityTokenValue);
-        return ResponseEntity.ok(itemService.findVacantById(securityToken, id));
+        return ResponseEntity.ok(itemService.findVacantById(securityToken, item_id));
     }
 
     // 5 - Get specific item
 
-    @GetMapping(path = "/items/{id}")
-    public ResponseEntity getItem(@RequestHeader String securityTokenValue, @PathVariable("id") Long id) {
+    @GetMapping(path = "/items/{item_id}")
+    public ResponseEntity getItem(@RequestHeader String securityTokenValue, @PathVariable Long item_id) {
         UUID securityToken = UUID.fromString(securityTokenValue);
-        Item item = itemService.findById(securityToken, id);
-
-        if(item!=null) return ResponseEntity.ok(item);
-        else return ResponseEntity.status(HttpStatus.FORBIDDEN).body("something went wrong");
+        return ResponseEntity.ok(itemService.findById(securityToken, item_id));
     }
 
     // Get specific booking
 
-    @GetMapping(path="book/{id}")
-    public ResponseEntity getBooking(@RequestHeader String securityTokenValue, @PathVariable("id") Long id) {
+    @GetMapping(path="book/{book_id}")
+    public ResponseEntity getBooking(@RequestHeader String securityTokenValue, @PathVariable Long book_id) {
         UUID securityToken = UUID.fromString(securityTokenValue);
-        return ResponseEntity.ok(bookingService.getBooking(securityToken, id));
+        return ResponseEntity.ok(bookingService.getBooking(securityToken, book_id));
     }
 
-    @GetMapping(path = "bookingdetails/{id}")
-    public ResponseEntity getBookingDetails(@RequestHeader String securityTokenValue, @PathVariable("id") Long id) {
+    @GetMapping(path = "bookingdetails/{book_id}")
+    public ResponseEntity getBookingDetails(@RequestHeader String securityTokenValue, @PathVariable Long book_id) {
         UUID securityToken = UUID.fromString(securityTokenValue);
-        return ResponseEntity.ok(bookingService.getBookingDetails(securityToken, id));
+        return ResponseEntity.ok(bookingService.getBookingDetails(securityToken, book_id));
     }
 
 
     // 6 - Delete specific item
 
-    @DeleteMapping(path = "/item/{id}")
-    public ResponseEntity deleteItem(@RequestHeader String securityTokenValue, @PathVariable("id") Long id) {
+    @DeleteMapping(path = "/item/{item_id}")
+    public ResponseEntity deleteItem(@RequestHeader String securityTokenValue, @PathVariable Long item_id) {
         UUID securityToken = UUID.fromString(securityTokenValue);
-        itemService.deleteById(securityToken, id);
+        itemService.deleteById(securityToken, item_id);
         return ResponseEntity.ok("Item deleted");
     }
 
     // 7 - Update specific item
 
-    @PutMapping(path = "/item/{id}")
-    public ResponseEntity updateItem(@RequestHeader String securityTokenValue, @PathVariable("id") Long id, @RequestBody Item itemDetails) {
+    @PutMapping(path = "/item/{item_id}")
+    public ResponseEntity updateItem(@RequestHeader String securityTokenValue, @PathVariable Long item_id, @RequestBody Item itemDetails) {
         UUID securityToken = UUID.fromString(securityTokenValue);
-        return ResponseEntity.ok(itemService.updateById(securityToken, id, itemDetails));
+        return ResponseEntity.ok(itemService.updateById(securityToken, item_id, itemDetails));
     }
 
     // 8 - Book specific item
 
     @PostMapping(path = "/book/{item_id}")
-    public ResponseEntity postBooking(@RequestHeader String securityTokenValue, @PathVariable("id") Long item_id, @RequestBody Booking booking) {
+    public ResponseEntity postBooking(@RequestHeader String securityTokenValue, @PathVariable Long item_id, @RequestBody Booking booking) {
         UUID securityToken = UUID.fromString(securityTokenValue);
         return ResponseEntity.ok(bookingService.addBooking(securityToken, item_id, booking));
     }
 
     // 9 - Release specific item
 
-    @DeleteMapping(path = "/cancel/{id}")
-    public ResponseEntity deleteBooking(  UUID securityToken, @PathVariable("id") Long id) {
-        Booking booking = bookingService.deleteBooking(securityToken, id);
-
-        return ResponseEntity.ok(booking);
+    @DeleteMapping(path = "/cancel/{book_id}")
+    public ResponseEntity deleteBooking(UUID securityToken, @PathVariable Long book_id) {
+        return ResponseEntity.ok(bookingService.deleteBooking(securityToken, book_id));
     }
 
     // wszystkie rezerwacje danego autora
@@ -196,13 +172,13 @@ public class Controller {
         return ResponseEntity.ok(bookingService.findAllBookingListByUserId(securityToken, id));
     }*/
 
-    @GetMapping(path = "user/{id}/book")
+    @GetMapping(path = "user/book")
     public ResponseEntity getAllBooksFromToken(@RequestHeader String securityTokenValue) {
         UUID securityToken = UUID.fromString(securityTokenValue);
         return ResponseEntity.ok(bookingService.findAllByToken(securityToken));
     }
 
-    @GetMapping(path="user/{id}/bookinglist")
+    @GetMapping(path="user/bookinglist")
     public ResponseEntity getBookingListFromToken(@RequestHeader String securityTokenValue) {
         UUID securityToken = UUID.fromString(securityTokenValue);
         return ResponseEntity.ok(bookingService.findAllBookingListByToken(securityToken));
@@ -213,15 +189,13 @@ public class Controller {
     // Przesyłanie obrazka
 
     @GetMapping(path = "/itemphoto/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
-    public @ResponseBody byte[] getItemPhoto(@PathVariable("id") Long id) throws IOException {
-        ItemPhoto itemPhoto = itemPhotoService.findItemPhotoByItemId(id);
-
-        return itemPhoto.getPhoto();
+    public ResponseEntity getItemPhoto(@PathVariable Long item_id) throws IOException {
+        return ResponseEntity.ok(itemService.findItemPhotoByItemId(item_id));
     }
 
-    @PostMapping(path = "/{id}/itemphoto")
-    public ItemPhoto saveItemPhoto(@RequestHeader String securityTokenValue, @RequestParam Long id, @RequestBody byte[] photo) {
+    @PostMapping(path = "/{item_id}/itemphoto")
+    public ResponseEntity saveItemPhoto(@RequestHeader String securityTokenValue, @RequestParam Long item_id, @RequestBody byte[] photo) {
         UUID securityToken = UUID.fromString(securityTokenValue);
-        return itemPhotoService.saveItemPhoto(securityToken, id, photo);
+        return ResponseEntity.ok(itemService.saveItemPhoto(securityToken, item_id, photo));
     }
 }
