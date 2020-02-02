@@ -100,6 +100,8 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 INSERT INTO public.users (id, login, password, first_name, last_name, security_token) VALUES (1, 'admin', 'admin', 'Adam', 'Abacki', '9fcbf4ff-5ea9-4027-ba82-5a7a7c59c156');
+INSERT INTO public.users (id, login, password, first_name, last_name, security_token) VALUES (2, 'admin2', 'admin2', 'admin2', 'Babacki', '2d3a2517-9c74-4067-8681-915ea4c24d21');
+INSERT INTO public.users (id, login, password, first_name, last_name, security_token) VALUES (3, 'bookly', 'bookly', 'bookly', 'Cabacki', '3090c76d-13b4-4096-b2bf-2903339937f0');
 
 SELECT pg_catalog.setval('public.bookings_id_seq', 1, false);
 SELECT pg_catalog.setval('public.items_id_seq', 1, false);

@@ -31,6 +31,9 @@ public class BookingList implements Serializable {
     @JsonSerialize
     private BigDecimal price;
 
+    @JsonSerialize
+    private Long item_id;
+
     public BookingList() {
     }
 
@@ -41,5 +44,6 @@ public class BookingList implements Serializable {
         this.title = item.getTitle();
         this.beds = item.getBeds();
         this.price = item.getPrice();
+        this.item_id = item.getId();
     }
 }
