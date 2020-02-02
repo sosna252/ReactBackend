@@ -13,6 +13,7 @@ import pw.react.flatly.flatlybackend.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -100,15 +101,17 @@ public class ItemServiceImpl implements ItemService {
         List<LocalDate> dates = new ArrayList<LocalDate>();
         dates.add(item.getStart_date_time());
         for (Booking booking:bookings) {
-            dates.add(booking.getStart_date());
-            lists.add(dates);
+            dates.add(booking.getStart_date().minusDays(1));
+
+            if(!dates.get(0).isAfter(dates.get(1))) lists.add(dates);
 
             dates = new ArrayList<LocalDate>();
 
-            dates.add(booking.getEnd_date());
+            dates.add(booking.getEnd_date().plusDays(1));
         }
         dates.add(item.getEnd_date_time());
-        lists.add(dates);
+
+        if(!dates.get(0).isAfter(dates.get(1))) lists.add(dates);
 
         return lists;
     }
