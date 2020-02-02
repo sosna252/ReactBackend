@@ -188,13 +188,13 @@ public class Controller {
 
     // Przesyłanie obrazka
 
-    @GetMapping(path = "/itemphoto/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(path = "/itemphoto/{item_id}", produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity getItemPhoto(@PathVariable Long item_id) throws IOException {
         return ResponseEntity.ok(itemService.findItemPhotoByItemId(item_id));
     }
 
     @PostMapping(path = "/{item_id}/itemphoto")
-    public ResponseEntity saveItemPhoto(@RequestHeader String securityTokenValue, @RequestParam Long item_id, @RequestBody byte[] photo) {
+    public ResponseEntity saveItemPhoto(@RequestHeader String securityTokenValue, @PathVariable Long item_id, @RequestBody byte[] photo) {
         UUID securityToken = UUID.fromString(securityTokenValue);
         return ResponseEntity.ok(itemService.saveItemPhoto(securityToken, item_id, photo));
     }
