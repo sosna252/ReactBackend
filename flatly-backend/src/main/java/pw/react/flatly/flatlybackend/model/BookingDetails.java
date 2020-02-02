@@ -12,16 +12,22 @@ import java.time.LocalDate;
 
 public class BookingDetails implements Serializable {
 
+    @JsonSerialize
     private Long id;
 
+    @JsonSerialize
     private String description;
 
+    @JsonSerialize
     private Integer people;
 
+    @JsonSerialize
     private String name;
 
+    @JsonSerialize
     private String last_name;
 
+    @JsonSerialize
     private String email;
 
     @JsonDeserialize(using = JsonLocalDateDeserializer.class)
@@ -32,16 +38,22 @@ public class BookingDetails implements Serializable {
     @JsonSerialize(using = JsonLocalDateSerializer.class)
     private LocalDate end_date;
 
+    @JsonSerialize
     private String title;
 
+    @JsonSerialize
     private Integer beds;
 
+    @JsonSerialize
     private BigDecimal price;
 
+    @JsonSerialize
     private String city;
 
+    @JsonSerialize
     private String address;
 
+    @JsonSerialize
     private String country;
 
     public BookingDetails() {

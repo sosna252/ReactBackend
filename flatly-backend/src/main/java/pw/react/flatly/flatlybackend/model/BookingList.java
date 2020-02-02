@@ -11,6 +11,7 @@ import java.time.LocalDate;
 
 public class BookingList implements Serializable {
 
+    @JsonSerialize
     private Long id;
 
     @JsonDeserialize(using = JsonLocalDateDeserializer.class)
@@ -21,10 +22,13 @@ public class BookingList implements Serializable {
     @JsonSerialize(using = JsonLocalDateSerializer.class)
     private LocalDate end_date;
 
+    @JsonSerialize
     private String title;
 
+    @JsonSerialize
     private Integer beds;
 
+    @JsonSerialize
     private BigDecimal price;
 
     public BookingList() {
