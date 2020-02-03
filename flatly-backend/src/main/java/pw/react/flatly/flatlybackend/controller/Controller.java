@@ -154,7 +154,8 @@ public class Controller {
     // 9 - Release specific item
 
     @DeleteMapping(path = "/cancel/{book_id}")
-    public ResponseEntity deleteBooking(UUID securityToken, @PathVariable Long book_id) {
+    public ResponseEntity deleteBooking(@RequestHeader String securityTokenValue, @PathVariable Long book_id) {
+        UUID securityToken = UUID.fromString(securityTokenValue);
         return ResponseEntity.ok(bookingService.deleteBooking(securityToken, book_id));
     }
 
