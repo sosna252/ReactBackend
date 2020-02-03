@@ -54,8 +54,8 @@ public class ItemServiceImpl implements ItemService {
         }
 
         return itemRepository.findAll().stream()
-                .filter(item -> dateFrom == null || LocalDate.parse(dateFrom).isBefore(item.getStart_date_time()))
-                .filter(item -> dateTo == null || LocalDate.parse(dateTo).isAfter(item.getEnd_date_time()))
+                .filter(item -> dateFrom == null || (!LocalDate.parse(dateFrom).isAfter(item.getStart_date_time()) && !LocalDate.parse(dateFrom).isAfter(item.getEnd_date_time())))
+                .filter(item -> dateTo == null || (!LocalDate.parse(dateTo).isBefore(item.getEnd_date_time()) && !LocalDate.parse(dateTo).isBefore(item.getStart_date_time())))
                 .filter(item -> city == null || city.equals(item.getCity()))
                 .filter(item -> people == null || people <= item.getBeds())
                 .filter(item -> authorId == null || authorId.equals(item.getUser().getId()))
