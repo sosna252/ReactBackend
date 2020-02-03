@@ -43,9 +43,6 @@ public class BookingServiceImpl implements BookingService {
         return new BookingDetails(booking, booking.getItem());
     }
 
-
-
-
     @Override
     public Booking addBooking(UUID security_token, Long item_id, Booking booking) {
         User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("Nie masz uprawnień"));
@@ -61,7 +58,7 @@ public class BookingServiceImpl implements BookingService {
         }
 
         for(Booking itemBooking : item.getBookings()) {
-            if(!(booking.getEnd_date().isBefore(itemBooking.getStart_date()) || booking.getStart_date().isAfter(itemBooking.getStart_date()))) {
+            if(!(booking.getEnd_date().isBefore(itemBooking.getStart_date()) || booking.getStart_date().isAfter(itemBooking.getEnd_date()))) {
                 throw new ParamsMismatchException("Mieszkanie nie jest wtedy dostępne");
             }
         }
@@ -73,7 +70,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Booking deleteBooking(UUID security_token, Long id) {
         User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("Nie masz uprawnień"));
-        Booking booking = bookingRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
+        Booking booking = bookingRepository.findById(id).orElseThrow(() -> new BookingNotFoundException("Nie ma takiej rezerwacji"));
 
         bookingRepository.delete(booking);
         return booking;

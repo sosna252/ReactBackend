@@ -19,9 +19,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UUID login(String login, String password) {
-        User user = userRepository.findByLogin(login).orElse(null);
+        User user = userRepository.findByLogin(login).orElseThrow(() -> new UnauthorizedException("Login or password is incorrect"));
 
-        if(user==null || !user.getPassword().equals(password)) {
+        if(!user.getPassword().equals(password)) {
             throw new UnauthorizedException("Login or password is incorrect");
         }
 

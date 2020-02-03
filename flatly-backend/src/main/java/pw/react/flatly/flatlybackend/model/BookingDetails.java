@@ -75,4 +75,12 @@ public class BookingDetails implements Serializable {
         this.address = item.getAddress();
         this.country = item.getCountry();
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }
