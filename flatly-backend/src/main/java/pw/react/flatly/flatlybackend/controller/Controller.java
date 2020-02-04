@@ -190,7 +190,7 @@ public class Controller {
     // Przesyłanie obrazka
 
     @GetMapping(path = "/itemphoto/{item_id}", produces = MediaType.IMAGE_JPEG_VALUE)
-    public ResponseEntity getItemPhoto(@PathVariable Long item_id) throws IOException {
+    public ResponseEntity getItemPhoto(@PathVariable Long item_id) {
         return ResponseEntity.ok(itemService.findItemPhotoByItemId(item_id));
     }
 

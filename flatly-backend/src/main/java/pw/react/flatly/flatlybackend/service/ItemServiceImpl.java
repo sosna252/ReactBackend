@@ -1,7 +1,9 @@
 package pw.react.flatly.flatlybackend.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
 import pw.react.flatly.flatlybackend.exception.ItemNotFoundException;
 import pw.react.flatly.flatlybackend.exception.ParamsMismatchException;
 import pw.react.flatly.flatlybackend.exception.UnauthorizedException;
@@ -11,6 +13,7 @@ import pw.react.flatly.flatlybackend.model.User;
 import pw.react.flatly.flatlybackend.repository.ItemRepository;
 import pw.react.flatly.flatlybackend.repository.UserRepository;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -144,7 +147,14 @@ public class ItemServiceImpl implements ItemService {
     public byte[] findItemPhotoByItemId(Long item_id) {
         Item item = itemRepository.findById(item_id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
 
-        return item.getPhoto();
+        if(item.getPhoto()!=null) return item.getPhoto();
+
+        try {
+            ClassPathResource imgFile = new ClassPathResource("image/flat.jpg");
+            return StreamUtils.copyToByteArray(imgFile.getInputStream());
+        } catch (IOException ex) {
+            return null;
+        }
     }
 
     @Override
