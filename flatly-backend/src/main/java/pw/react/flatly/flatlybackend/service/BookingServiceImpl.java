@@ -31,35 +31,35 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking getBooking(UUID security_token, Long book_id) {
-        userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("Nie masz uprawnień"));
-        return bookingRepository.findById(book_id).orElseThrow(() -> new BookingNotFoundException("Nie ma takiej rezerwacji"));
+        userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("You do not have permission"));
+        return bookingRepository.findById(book_id).orElseThrow(() -> new BookingNotFoundException("There is no such a booking"));
     }
 
     @Override
     public BookingDetails getBookingDetails(UUID security_token, Long book_id) {
-        userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("Nie masz uprawnień"));
-        Booking booking = bookingRepository.findById(book_id).orElseThrow(() -> new BookingNotFoundException("Nie ma takiej rezerwacji"));
+        userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("You do not have permission"));
+        Booking booking = bookingRepository.findById(book_id).orElseThrow(() -> new BookingNotFoundException("There is no such a booking"));
 
         return new BookingDetails(booking, booking.getItem());
     }
 
     @Override
     public Booking addBooking(UUID security_token, Long item_id, Booking booking) {
-        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("Nie masz uprawnień"));
+        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("You do not have permission"));
 
         if(booking.getStart_date().isAfter(booking.getEnd_date())) {
-            throw new ParamsMismatchException("Data rozpoczęcia nie może być późniejsza niż zakończenia");
+            throw new ParamsMismatchException("Start date cannot be after end date");
         }
 
-        Item item = itemRepository.findById(item_id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
+        Item item = itemRepository.findById(item_id).orElseThrow(() -> new ItemNotFoundException("There is no such an item"));
 
         if(item.getStart_date_time().isAfter(booking.getStart_date()) || item.getEnd_date_time().isBefore(booking.getEnd_date())) {
-            throw new ParamsMismatchException("Mieszkanie nie jest wtedy dostępne");
+            throw new ParamsMismatchException("Item is not available these days");
         }
 
         for(Booking itemBooking : item.getBookings()) {
             if(!(booking.getEnd_date().isBefore(itemBooking.getStart_date()) || booking.getStart_date().isAfter(itemBooking.getEnd_date()))) {
-                throw new ParamsMismatchException("Mieszkanie nie jest wtedy dostępne");
+                throw new ParamsMismatchException("Item is not available these days");
             }
         }
 
@@ -69,44 +69,16 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking deleteBooking(UUID security_token, Long id) {
-        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("Nie masz uprawnień"));
-        Booking booking = bookingRepository.findById(id).orElseThrow(() -> new BookingNotFoundException("Nie ma takiej rezerwacji"));
+        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("You do not have permission"));
+        Booking booking = bookingRepository.findById(id).orElseThrow(() -> new BookingNotFoundException("There is no such a booking"));
 
         bookingRepository.delete(booking);
         return booking;
     }
 
-    /*@Override
-    public List<Booking> findAllByUserId(UUID security_token, Long id) {
-        userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UserNotFoundException("Nie masz uprawnień"));
-        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Nie znaleziono takiego użytkownika"));
-        List<Item> items = user.getItems();
-        List<Booking> bookings = new ArrayList<Booking>();
-
-        for(Item item: items) {
-            bookings.addAll(item.getBookings());
-        }
-
-        return bookings;
-    }
-
-    @Override
-    public List<BookingList> findAllBookingListByUserId(UUID security_token, Long id) {
-        userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UserNotFoundException("Nie masz uprawnień"));
-        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Nie znaleziono takiego użytkownika"));
-        List<Item> items = user.getItems();
-        List<BookingList> bookingsList = new ArrayList<BookingList>();
-
-        for(Item item: items) {
-            bookingsList.addAll(item.getBookings().stream().map(booking -> new BookingList(booking, item)).collect(Collectors.toList()));
-        }
-
-        return bookingsList;
-    }*/
-
     @Override
     public List<Booking> findAllByToken(UUID security_token) {
-        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("Nie masz uprawnień"));
+        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("You do not have permission"));
         List<Item> items = user.getItems();
         List<Booking> bookings = new ArrayList<Booking>();
 
@@ -119,7 +91,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingList> findAllBookingListByToken(UUID security_token) {
-        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("Nie masz uprawnień"));
+        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("You do not have permission"));
 
         List<Item> items = user.getItems();
         List<BookingList> bookingsList = new ArrayList<BookingList>();

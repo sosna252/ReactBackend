@@ -49,7 +49,7 @@ public class BookingServiceTest {
             Booking returnedBooking = bookingService.getBooking(UUID.randomUUID(), 1L);
             fail("Should throw UnauthorizedException");
         } catch (UnauthorizedException ex) {
-            assertEquals(ex.getMessage(), "Nie masz uprawnień");
+            assertEquals("You do not have permission", ex.getMessage());
         }
     }
 
@@ -63,7 +63,7 @@ public class BookingServiceTest {
             Booking returnedBooking = bookingService.getBooking(UUID.randomUUID(), 1L);
             fail("Should throw BookingNotFoundException");
         } catch (BookingNotFoundException ex) {
-            assertEquals(ex.getMessage(), "Nie ma takiej rezerwacji");
+            assertEquals("There is no such a booking", ex.getMessage());
         }
     }
 
@@ -76,7 +76,7 @@ public class BookingServiceTest {
         Mockito.when(bookingRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(booking));
 
         Booking returnedBooking = bookingService.getBooking(UUID.randomUUID(), 1L);
-        assertEquals(returnedBooking, booking);
+        assertEquals(booking, returnedBooking);
     }
 
     @Test
@@ -88,7 +88,7 @@ public class BookingServiceTest {
             BookingDetails returnedBooking = bookingService.getBookingDetails(UUID.randomUUID(), 1L);
             fail("Should throw UnauthorizedException");
         } catch (UnauthorizedException ex) {
-            assertEquals(ex.getMessage(), "Nie masz uprawnień");
+            assertEquals("You do not have permission", ex.getMessage());
         }
     }
 
@@ -102,7 +102,7 @@ public class BookingServiceTest {
             BookingDetails returnedBooking = bookingService.getBookingDetails(UUID.randomUUID(), 1L);
             fail("Should throw BookingNotFoundException");
         } catch (BookingNotFoundException ex) {
-            assertEquals(ex.getMessage(), "Nie ma takiej rezerwacji");
+            assertEquals("There is no such a booking", ex.getMessage());
         }
     }
 
@@ -119,7 +119,7 @@ public class BookingServiceTest {
 
         BookingDetails returnedBooking = bookingService.getBookingDetails(UUID.randomUUID(), 1L);
 
-        assertEquals(returnedBooking.getId(), booking.getId());
+        assertEquals(booking.getId(), returnedBooking.getId());
     }
 
     @Test
@@ -135,7 +135,7 @@ public class BookingServiceTest {
             Booking returnedBooking = bookingService.addBooking(UUID.randomUUID(), 1L, booking);
             fail("Should throw ParamsMismatchException");
         } catch (ParamsMismatchException ex) {
-            assertEquals(ex.getMessage(), "Data rozpoczęcia nie może być późniejsza niż zakończenia");
+            assertEquals("Start date cannot be after end date", ex.getMessage());
         }
     }
 
@@ -153,7 +153,7 @@ public class BookingServiceTest {
             Booking returnedBooking = bookingService.addBooking(UUID.randomUUID(), 1L, booking);
             fail("Should throw ItemNotFoundException");
         } catch (ItemNotFoundException ex) {
-            assertEquals(ex.getMessage(), "Nie ma takiego mieszkania");
+            assertEquals("There is no such an item", ex.getMessage());
         }
     }
 
@@ -175,7 +175,7 @@ public class BookingServiceTest {
             Booking returnedBooking = bookingService.addBooking(UUID.randomUUID(), 1L, booking);
             fail("Should throw ParamsMismatchException");
         } catch (ParamsMismatchException ex) {
-            assertEquals(ex.getMessage(), "Mieszkanie nie jest wtedy dostępne");
+            assertEquals("Item is not available these days", ex.getMessage());
         }
     }
 
@@ -197,7 +197,7 @@ public class BookingServiceTest {
             Booking returnedBooking = bookingService.addBooking(UUID.randomUUID(), 1L, booking);
             fail("Should throw ParamsMismatchException");
         } catch (ParamsMismatchException ex) {
-            assertEquals(ex.getMessage(), "Mieszkanie nie jest wtedy dostępne");
+            assertEquals("Item is not available these days", ex.getMessage());
         }
     }
 
@@ -219,7 +219,7 @@ public class BookingServiceTest {
             Booking returnedBooking = bookingService.addBooking(UUID.randomUUID(), 1L, booking);
             fail("Should throw ParamsMismatchException");
         } catch (ParamsMismatchException ex) {
-            assertEquals(ex.getMessage(), "Mieszkanie nie jest wtedy dostępne");
+            assertEquals("Item is not available these days", ex.getMessage());
         }
     }
 
@@ -249,7 +249,7 @@ public class BookingServiceTest {
             Booking returnedBooking = bookingService.addBooking(UUID.randomUUID(), 1L, booking);
             fail("Should throw ParamsMismatchException");
         } catch (ParamsMismatchException ex) {
-            assertEquals(ex.getMessage(), "Mieszkanie nie jest wtedy dostępne");
+            assertEquals("Item is not available these days", ex.getMessage());
         }
     }
 
@@ -279,7 +279,7 @@ public class BookingServiceTest {
             Booking returnedBooking = bookingService.addBooking(UUID.randomUUID(), 1L, booking);
             fail("Should throw ParamsMismatchException");
         } catch (ParamsMismatchException ex) {
-            assertEquals(ex.getMessage(), "Mieszkanie nie jest wtedy dostępne");
+            assertEquals("Item is not available these days", ex.getMessage());
         }
     }
 
@@ -309,7 +309,7 @@ public class BookingServiceTest {
             Booking returnedBooking = bookingService.addBooking(UUID.randomUUID(), 1L, booking);
             fail("Should throw ParamsMismatchException");
         } catch (ParamsMismatchException ex) {
-            assertEquals(ex.getMessage(), "Mieszkanie nie jest wtedy dostępne");
+            assertEquals("Item is not available these days", ex.getMessage());
         }
     }
 
@@ -339,7 +339,7 @@ public class BookingServiceTest {
             Booking returnedBooking = bookingService.addBooking(UUID.randomUUID(), 1L, booking);
             fail("Should throw ParamsMismatchException");
         } catch (ParamsMismatchException ex) {
-            assertEquals(ex.getMessage(), "Mieszkanie nie jest wtedy dostępne");
+            assertEquals("Item is not available these days", ex.getMessage());
         }
     }
 
@@ -369,7 +369,7 @@ public class BookingServiceTest {
             Booking returnedBooking = bookingService.addBooking(UUID.randomUUID(), 1L, booking);
             fail("Should throw ParamsMismatchException");
         } catch (ParamsMismatchException ex) {
-            assertEquals(ex.getMessage(), "Mieszkanie nie jest wtedy dostępne");
+            assertEquals("Item is not available these days", ex.getMessage());
         }
     }
 
@@ -399,7 +399,7 @@ public class BookingServiceTest {
             Booking returnedBooking = bookingService.addBooking(UUID.randomUUID(), 1L, booking);
             fail("Should throw ParamsMismatchException");
         } catch (ParamsMismatchException ex) {
-            assertEquals(ex.getMessage(), "Mieszkanie nie jest wtedy dostępne");
+            assertEquals("Item is not available these days", ex.getMessage());
         }
     }
 
@@ -427,7 +427,7 @@ public class BookingServiceTest {
 
 
         Booking returnedBooking = bookingService.addBooking(UUID.randomUUID(), 1L, booking);
-        assertEquals(returnedBooking, booking);
+        assertEquals(booking, returnedBooking);
     }
 
     @Test
@@ -439,7 +439,7 @@ public class BookingServiceTest {
             Booking returnedBooking = bookingService.deleteBooking(UUID.randomUUID(), 1L);
             fail("Should throw UnauthorizedException");
         } catch (UnauthorizedException ex) {
-            assertEquals(ex.getMessage(), "Nie masz uprawnień");
+            assertEquals("You do not have permission", ex.getMessage());
         }
     }
 
@@ -453,7 +453,7 @@ public class BookingServiceTest {
             Booking returnedBooking = bookingService.deleteBooking(UUID.randomUUID(), 1L);
             fail("Should throw BookingNotFoundException");
         } catch (BookingNotFoundException ex) {
-            assertEquals(ex.getMessage(), "Nie ma takiej rezerwacji");
+            assertEquals("There is no such a booking", ex.getMessage());
         }
     }
 
@@ -466,7 +466,7 @@ public class BookingServiceTest {
         Mockito.when(bookingRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(booking));
 
         Booking returnedBooking = bookingService.deleteBooking(UUID.randomUUID(), 1L);
-        assertEquals(returnedBooking, booking);
+        assertEquals(booking, returnedBooking);
     }
 
     @Test
@@ -478,7 +478,7 @@ public class BookingServiceTest {
             List<Booking> returnedBookings = bookingService.findAllByToken(UUID.randomUUID());
             fail("Should throw UnauthorizedException");
         } catch (UnauthorizedException ex) {
-            assertEquals(ex.getMessage(), "Nie masz uprawnień");
+            assertEquals("You do not have permission", ex.getMessage());
         }
     }
 
@@ -505,7 +505,7 @@ public class BookingServiceTest {
         Mockito.when(userRepository.findBySecurityToken(Mockito.any())).thenReturn(Optional.of(user));
 
         List<Booking> returnedBookings = bookingService.findAllByToken(UUID.randomUUID());
-        assertEquals(returnedBookings.size(), 2);
+        assertEquals(2, returnedBookings.size());
     }
 
     @Test
@@ -517,7 +517,7 @@ public class BookingServiceTest {
             List<BookingList> returnedBookings = bookingService.findAllBookingListByToken(UUID.randomUUID());
             fail("Should throw UnauthorizedException");
         } catch (UnauthorizedException ex) {
-            assertEquals(ex.getMessage(), "Nie masz uprawnień");
+            assertEquals("You do not have permission", ex.getMessage());
         }
     }
 
@@ -544,7 +544,7 @@ public class BookingServiceTest {
         Mockito.when(userRepository.findBySecurityToken(Mockito.any())).thenReturn(Optional.of(user));
 
         List<BookingList> returnedBookings = bookingService.findAllBookingListByToken(UUID.randomUUID());
-        assertEquals(returnedBookings.size(), 2);
+        assertEquals(2, returnedBookings.size());
     }
 
 

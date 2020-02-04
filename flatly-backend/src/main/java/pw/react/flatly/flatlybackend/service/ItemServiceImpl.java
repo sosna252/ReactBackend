@@ -32,10 +32,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item save(UUID security_token, Item item) {
-        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("Nie masz uprawnień"));
+        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("You do not have permission"));
 
         if(item.getStart_date_time().isAfter(item.getEnd_date_time())) {
-            throw new ParamsMismatchException("Data rozpoczęcia nie może być późniejsza niż zakończenia");
+            throw new ParamsMismatchException("Start date cannot be after end date");
         }
 
         item.setUser(user);
@@ -45,11 +45,11 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<Item> findAll(UUID security_token, String dateFrom, String dateTo, String city, Integer people, Long authorId, String sort, String dir) {
 
-        userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("Nie masz uprawnień"));
+        userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("You do not have permission"));
 
         if(dateFrom!=null && dateTo!=null) {
             if(LocalDate.parse(dateFrom).isAfter(LocalDate.parse(dateTo))) {
-                throw new ParamsMismatchException("Data rozpoczęcia nie może być późniejsza niż zakończenia");
+                throw new ParamsMismatchException("Start date cannot be after end date");
             }
         }
 
@@ -91,8 +91,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<List<LocalDate>> findVacantById(UUID security_token, Long item_id) {
-        userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("Nie masz uprawnień"));
-        Item item = itemRepository.findById(item_id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
+        userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("You do not have permission"));
+        Item item = itemRepository.findById(item_id).orElseThrow(() -> new ItemNotFoundException("There is no such an item"));
 
         List<Booking> bookings = item.getBookings();
 
@@ -118,26 +118,26 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item findById(UUID security_token, Long item_id) {
-        userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("Nie masz uprawnień"));
-        return itemRepository.findById(item_id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
+        userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("You do not have permission"));
+        return itemRepository.findById(item_id).orElseThrow(() -> new ItemNotFoundException("There is no such an item"));
     }
 
     @Override
     public void deleteById(UUID security_token, Long item_id) {
-        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("Nie masz uprawnień"));
-        Item item = itemRepository.findById(item_id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
+        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("You do not have permission"));
+        Item item = itemRepository.findById(item_id).orElseThrow(() -> new ItemNotFoundException("There is no such an item"));
 
-        if(item.getUser()!=user) throw new UnauthorizedException("To mieszkanie nie należy do ciebie");
+        if(item.getUser()!=user) throw new UnauthorizedException("This item is not yours");
 
         itemRepository.delete(item);
     }
 
     @Override
     public Item updateById(UUID security_token, Long item_id, Item itemDetails) {
-        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("Nie masz uprawnień"));
-        Item item = itemRepository.findById(item_id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
+        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("You do not have permission"));
+        Item item = itemRepository.findById(item_id).orElseThrow(() -> new ItemNotFoundException("There is no such an item"));
 
-        if(item.getUser()!=user) throw new UnauthorizedException("To mieszkanie nie należy do ciebie");
+        if(item.getUser()!=user) throw new UnauthorizedException("This item is not yours");
 
         item.setValues(itemDetails);
         return itemRepository.save(item);
@@ -145,7 +145,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public byte[] findItemPhotoByItemId(Long item_id) {
-        Item item = itemRepository.findById(item_id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
+        Item item = itemRepository.findById(item_id).orElseThrow(() -> new ItemNotFoundException("There is no such an item"));
 
         if(item.getPhoto()!=null) return item.getPhoto();
 
@@ -159,10 +159,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item saveItemPhoto(UUID security_token, Long item_id, byte[] photo) {
-        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("Nie masz uprawnień"));
-        Item item = itemRepository.findById(item_id).orElseThrow(() -> new ItemNotFoundException("Nie ma takiego mieszkania"));
+        User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("You do not have permission"));
+        Item item = itemRepository.findById(item_id).orElseThrow(() -> new ItemNotFoundException("There is no such an item"));
 
-        if(item.getUser()!=user) throw new UnauthorizedException("To mieszkanie nie należy do ciebie");
+        if(item.getUser()!=user) throw new UnauthorizedException("This item is not yours");
 
         item.setPhoto(photo);
 

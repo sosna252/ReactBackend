@@ -44,7 +44,7 @@ public class ItemServiceTest {
             Item returnedItem = itemService.save(UUID.randomUUID(), new Item());
             fail("Should throw UnauthorizedException");
         } catch (UnauthorizedException ex) {
-            assertEquals(ex.getMessage(), "Nie masz uprawnień");
+            assertEquals("You do not have permission", ex.getMessage());
         }
     }
 
@@ -61,7 +61,7 @@ public class ItemServiceTest {
             Item returnedItem = itemService.save(UUID.randomUUID(), item);
             fail("Should throw ParamsMismatchException");
         } catch (ParamsMismatchException ex) {
-            assertEquals(ex.getMessage(), "Data rozpoczęcia nie może być późniejsza niż zakończenia");
+            assertEquals("Start date cannot be after end date", ex.getMessage());
         }
     }
 
@@ -88,7 +88,7 @@ public class ItemServiceTest {
             List<Item> returnedItems = itemService.findAll(UUID.randomUUID(), null, null, null, null, null, null, null);
             fail("Should throw UnauthorizedException");
         } catch (UnauthorizedException ex) {
-            assertEquals(ex.getMessage(), "Nie masz uprawnień");
+            assertEquals("You do not have permission", ex.getMessage());
         }
     }
 
@@ -101,7 +101,7 @@ public class ItemServiceTest {
             List<Item> returnedItems = itemService.findAll(UUID.randomUUID(), "2012-12-15", "2012-12-10", null, null, null, null, null);
             fail("Should throw ParamsMismatchException");
         } catch (ParamsMismatchException ex) {
-            assertEquals(ex.getMessage(), "Data rozpoczęcia nie może być późniejsza niż zakończenia");
+            assertEquals("Start date cannot be after end date", ex.getMessage());
         }
     }
 
@@ -205,7 +205,7 @@ public class ItemServiceTest {
             List<List<LocalDate>> returnedLocalDates = itemService.findVacantById(UUID.randomUUID(), 1L);
             fail("Should throw UnauthorizedException");
         } catch (UnauthorizedException ex) {
-            assertEquals(ex.getMessage(), "Nie masz uprawnień");
+            assertEquals("You do not have permission", ex.getMessage());
         }
     }
 
@@ -219,7 +219,7 @@ public class ItemServiceTest {
             List<List<LocalDate>> returnedLocalDates = itemService.findVacantById(UUID.randomUUID(), 1L);
             fail("Should throw ItemNotFoundException");
         } catch (ItemNotFoundException ex) {
-            assertEquals(ex.getMessage(), "Nie ma takiego mieszkania");
+            assertEquals("There is no such an item", ex.getMessage());
         }
     }
 
@@ -318,7 +318,7 @@ public class ItemServiceTest {
             Item returnedItem = itemService.findById(UUID.randomUUID(), 1L);
             fail("Should throw UnauthorizedException");
         } catch (UnauthorizedException ex) {
-            assertEquals(ex.getMessage(), "Nie masz uprawnień");
+            assertEquals("You do not have permission", ex.getMessage());
         }
     }
 
@@ -332,7 +332,7 @@ public class ItemServiceTest {
             Item returnedItem = itemService.findById(UUID.randomUUID(), 1L);
             fail("Should throw ItemNotFoundException");
         } catch (ItemNotFoundException ex) {
-            assertEquals(ex.getMessage(), "Nie ma takiego mieszkania");
+            assertEquals("There is no such an item", ex.getMessage());
         }
     }
 
@@ -358,7 +358,7 @@ public class ItemServiceTest {
             itemService.deleteById(UUID.randomUUID(), 1L);
             fail("Should throw UnauthorizedException");
         } catch (UnauthorizedException ex) {
-            assertEquals(ex.getMessage(), "Nie masz uprawnień");
+            assertEquals("You do not have permission", ex.getMessage());
         }
     }
 
@@ -372,7 +372,7 @@ public class ItemServiceTest {
             itemService.deleteById(UUID.randomUUID(), 1L);
             fail("Should throw ItemNotFoundException");
         } catch (ItemNotFoundException ex) {
-            assertEquals(ex.getMessage(), "Nie ma takiego mieszkania");
+            assertEquals("There is no such an item", ex.getMessage());
         }
     }
 
@@ -389,7 +389,7 @@ public class ItemServiceTest {
             itemService.deleteById(UUID.randomUUID(), 1L);
             fail("Should throw UnauthorizedException");
         } catch (UnauthorizedException ex) {
-            assertEquals(ex.getMessage(), "To mieszkanie nie należy do ciebie");
+            assertEquals("This item is not yours", ex.getMessage());
         }
     }
 
@@ -413,7 +413,7 @@ public class ItemServiceTest {
             Item returnedItem = itemService.updateById(UUID.randomUUID(), 1L, new Item());
             fail("Should throw UnauthorizedException");
         } catch (UnauthorizedException ex) {
-            assertEquals(ex.getMessage(), "Nie masz uprawnień");
+            assertEquals("You do not have permission", ex.getMessage());
         }
     }
 
@@ -427,7 +427,7 @@ public class ItemServiceTest {
             Item returnedItem = itemService.updateById(UUID.randomUUID(), 1L, new Item());
             fail("Should throw ItemNotFoundException");
         } catch (ItemNotFoundException ex) {
-            assertEquals(ex.getMessage(), "Nie ma takiego mieszkania");
+            assertEquals("There is no such an item", ex.getMessage());
         }
     }
 
@@ -444,7 +444,7 @@ public class ItemServiceTest {
             Item returnedItem = itemService.updateById(UUID.randomUUID(), 1L, new Item());
             fail("Should throw UnauthorizedException");
         } catch (UnauthorizedException ex) {
-            assertEquals(ex.getMessage(), "To mieszkanie nie należy do ciebie");
+            assertEquals("This item is not yours", ex.getMessage());
         }
     }
 
@@ -474,7 +474,7 @@ public class ItemServiceTest {
             byte[] returnedPhoto = itemService.findItemPhotoByItemId(1L);
             fail("Should throw ItemNotFoundException");
         } catch (ItemNotFoundException ex) {
-            assertEquals(ex.getMessage(), "Nie ma takiego mieszkania");
+            assertEquals("There is no such an item", ex.getMessage());
         }
     }
 
@@ -487,7 +487,7 @@ public class ItemServiceTest {
             Item returnedItem = itemService.saveItemPhoto(UUID.randomUUID(), 1L, new byte[0]);
             fail("Should throw UnauthorizedException");
         } catch (UnauthorizedException ex) {
-            assertEquals(ex.getMessage(), "Nie masz uprawnień");
+            assertEquals("You do not have permission", ex.getMessage());
         }
     }
 
@@ -501,7 +501,7 @@ public class ItemServiceTest {
             Item returnedItem = itemService.saveItemPhoto(UUID.randomUUID(), 1L, new byte[0]);
             fail("Should throw ItemNotFoundException");
         } catch (ItemNotFoundException ex) {
-            assertEquals(ex.getMessage(), "Nie ma takiego mieszkania");
+            assertEquals("There is no such an item", ex.getMessage());
         }
     }
 
@@ -518,7 +518,7 @@ public class ItemServiceTest {
             Item returnedItem = itemService.saveItemPhoto(UUID.randomUUID(), 1L, new byte[0]);
             fail("Should throw UnauthorizedException");
         } catch (UnauthorizedException ex) {
-            assertEquals(ex.getMessage(), "To mieszkanie nie należy do ciebie");
+            assertEquals("This item is not yours", ex.getMessage());
         }
     }
 

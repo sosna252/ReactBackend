@@ -161,18 +161,6 @@ public class Controller {
 
     // wszystkie rezerwacje danego autora
 
-    /*@GetMapping(path = "user/{id}/book")
-    public ResponseEntity getAllBooksByUserId(@RequestHeader String securityTokenValue, @PathVariable("id") Long id) {
-        UUID securityToken = UUID.fromString(securityTokenValue);
-        return ResponseEntity.ok(bookingService.findAllByUserId(securityToken, id));
-    }
-
-    @GetMapping(path="user/{id}/bookinglist")
-    public ResponseEntity getBookingList(@RequestHeader String securityTokenValue, @PathVariable("id") Long id) {
-        UUID securityToken = UUID.fromString(securityTokenValue);
-        return ResponseEntity.ok(bookingService.findAllBookingListByUserId(securityToken, id));
-    }*/
-
     @GetMapping(path = "user/book")
     public ResponseEntity getAllBooksFromToken(@RequestHeader String securityTokenValue) {
         UUID securityToken = UUID.fromString(securityTokenValue);
