@@ -344,6 +344,66 @@ public class BookingServiceTest {
     }
 
     @Test
+    public void givenExistingItemButIsOccupied5_whenAddBooking_thenThrowParamsMismatchException() {
+        // two bookings intersect, first starts and second ends in the same day
+
+        Item item = new Item();
+        item.setStart_date_time(LocalDate.parse("2012-12-01"));
+        item.setEnd_date_time(LocalDate.parse("2012-12-31"));
+
+        List<Booking> bookings = new ArrayList<>();
+        Booking itemBooking1 = new Booking();
+        itemBooking1.setStart_date(LocalDate.parse("2012-12-10"));
+        itemBooking1.setEnd_date(LocalDate.parse("2012-12-15"));
+        bookings.add(itemBooking1);
+        item.setBookings(bookings);
+
+        Booking booking = new Booking();
+        booking.setStart_date(LocalDate.parse("2012-12-15"));
+        booking.setEnd_date(LocalDate.parse("2012-12-20"));
+
+        Mockito.when(userRepository.findBySecurityToken(Mockito.any())).thenReturn(Optional.of(new User()));
+        Mockito.when(itemRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(item));
+
+        try {
+            Booking returnedBooking = bookingService.addBooking(UUID.randomUUID(), 1L, booking);
+            fail("Should throw ParamsMismatchException");
+        } catch (ParamsMismatchException ex) {
+            assertEquals(ex.getMessage(), "Mieszkanie nie jest wtedy dostępne");
+        }
+    }
+
+    @Test
+    public void givenExistingItemButIsOccupied6_whenAddBooking_thenThrowParamsMismatchException() {
+        // two bookings intersect, the same days
+
+        Item item = new Item();
+        item.setStart_date_time(LocalDate.parse("2012-12-01"));
+        item.setEnd_date_time(LocalDate.parse("2012-12-31"));
+
+        List<Booking> bookings = new ArrayList<>();
+        Booking itemBooking1 = new Booking();
+        itemBooking1.setStart_date(LocalDate.parse("2012-12-10"));
+        itemBooking1.setEnd_date(LocalDate.parse("2012-12-15"));
+        bookings.add(itemBooking1);
+        item.setBookings(bookings);
+
+        Booking booking = new Booking();
+        booking.setStart_date(LocalDate.parse("2012-12-10"));
+        booking.setEnd_date(LocalDate.parse("2012-12-15"));
+
+        Mockito.when(userRepository.findBySecurityToken(Mockito.any())).thenReturn(Optional.of(new User()));
+        Mockito.when(itemRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(item));
+
+        try {
+            Booking returnedBooking = bookingService.addBooking(UUID.randomUUID(), 1L, booking);
+            fail("Should throw ParamsMismatchException");
+        } catch (ParamsMismatchException ex) {
+            assertEquals(ex.getMessage(), "Mieszkanie nie jest wtedy dostępne");
+        }
+    }
+
+    @Test
     public void givenExistingItem_whenAddBooking_thenReturnBooking() {
 
         Item item = new Item();

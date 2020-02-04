@@ -72,6 +72,14 @@ public class Item {
 
     public Item() {}
 
+    public Item(LocalDate start_date_time, LocalDate end_date_time, Integer beds, BigDecimal price, String city) {
+        this.start_date_time = start_date_time;
+        this.end_date_time = end_date_time;
+        this.beds = beds;
+        this.price = price;
+        this.city = city;
+    }
+
     public void setValues(Item item) {
         this.start_date_time = item.getStart_date_time();
         this.end_date_time = item.end_date_time;

@@ -12,10 +12,7 @@ import pw.react.flatly.flatlybackend.repository.ItemRepository;
 import pw.react.flatly.flatlybackend.repository.UserRepository;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -34,7 +31,7 @@ public class ItemServiceImpl implements ItemService {
     public Item save(UUID security_token, Item item) {
         User user = userRepository.findBySecurityToken(security_token).orElseThrow(() -> new UnauthorizedException("Nie masz uprawnień"));
 
-        if(item.getStart_date_time().compareTo(item.getEnd_date_time())>0) {
+        if(item.getStart_date_time().isAfter(item.getEnd_date_time())) {
             throw new ParamsMismatchException("Data rozpoczęcia nie może być późniejsza niż zakończenia");
         }
 
@@ -54,8 +51,8 @@ public class ItemServiceImpl implements ItemService {
         }
 
         return itemRepository.findAll().stream()
-                .filter(item -> dateFrom == null || (!LocalDate.parse(dateFrom).isAfter(item.getStart_date_time()) && !LocalDate.parse(dateFrom).isAfter(item.getEnd_date_time())))
-                .filter(item -> dateTo == null || (!LocalDate.parse(dateTo).isBefore(item.getEnd_date_time()) && !LocalDate.parse(dateTo).isBefore(item.getStart_date_time())))
+                .filter(item -> dateFrom == null || (!item.getStart_date_time().isAfter(LocalDate.parse(dateFrom)) && !item.getEnd_date_time().isBefore(LocalDate.parse(dateFrom))))
+                .filter(item -> dateTo == null || (!item.getEnd_date_time().isBefore(LocalDate.parse(dateTo)) && !item.getStart_date_time().isAfter(LocalDate.parse(dateTo))))
                 .filter(item -> city == null || city.equals(item.getCity()))
                 .filter(item -> people == null || people <= item.getBeds())
                 .filter(item -> authorId == null || authorId.equals(item.getUser().getId()))
@@ -73,10 +70,10 @@ public class ItemServiceImpl implements ItemService {
                                 return i2.getStart_date_time().compareTo(i1.getStart_date_time());
                         }
                     } else {
-                        if(sort==null) return i2.getStart_date_time().compareTo(i1.getStart_date_time());
+                        if(sort==null) return i1.getStart_date_time().compareTo(i2.getStart_date_time());
                         switch (sort) {
                             case "end-time":
-                                return i1.getEnd_date_time().compareTo((i2.getEnd_date_time()));
+                                return i1.getEnd_date_time().compareTo(i2.getEnd_date_time());
                             case "price":
                                 return i1.getPrice().compareTo(i2.getPrice());
                             case "rating":
