@@ -1,3 +1,4 @@
+/*
 DROP TABLE IF EXISTS public.bookings;
 CREATE TABLE public.bookings (
     id bigint NOT NULL,
@@ -131,3 +132,4 @@ ALTER TABLE ONLY public.items
 
 ALTER TABLE ONLY public.item_photos
     ADD CONSTRAINT item_photos_item_id_fkey FOREIGN KEY (item_id) REFERENCES public.items(id);
+*/

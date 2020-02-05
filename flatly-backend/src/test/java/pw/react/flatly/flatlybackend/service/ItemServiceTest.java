@@ -1,6 +1,6 @@
 package pw.react.flatly.flatlybackend.service;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
