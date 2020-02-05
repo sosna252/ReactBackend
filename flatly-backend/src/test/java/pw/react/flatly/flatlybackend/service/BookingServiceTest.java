@@ -526,12 +526,16 @@ public class BookingServiceTest {
 
         Item item1 = new Item();
         List<Booking> bookings1 = new ArrayList<>();
-        bookings1.add(new Booking());
+        Booking booking1 = new Booking();
+        booking1.setStart_date(LocalDate.parse("2012-12-20"));
+        bookings1.add(booking1);
         item1.setBookings(bookings1);
 
         Item item2 = new Item();
         List<Booking> bookings2 = new ArrayList<>();
-        bookings2.add(new Booking());
+        Booking booking2 = new Booking();
+        booking2.setStart_date(LocalDate.parse("2012-12-15"));
+        bookings2.add(booking2);
         item2.setBookings(bookings2);
 
         User user = new User();
