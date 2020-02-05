@@ -46,4 +46,12 @@ public class BookingList implements Serializable {
         this.price = item.getPrice();
         this.item_id = item.getId();
     }
+
+    public LocalDate getStart_date() {
+        return start_date;
+    }
+
+    public void setStart_date(LocalDate start_date) {
+        this.start_date = start_date;
+    }
 }

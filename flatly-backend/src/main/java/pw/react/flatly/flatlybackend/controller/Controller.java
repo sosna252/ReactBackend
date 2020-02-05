@@ -59,11 +59,11 @@ public class Controller {
         }
     }
 
-    @GetMapping(path = "/login")
-    public List<User> getUsers() {
-
-        return userRepository.findAll();
-    }
+//    @GetMapping(path = "/login")
+//    public List<User> getUsers() {
+//
+//        return userRepository.findAll();
+//    }
 
     @PostMapping(path = "/login")
     public ResponseEntity login(@RequestBody LoginData loginData) {

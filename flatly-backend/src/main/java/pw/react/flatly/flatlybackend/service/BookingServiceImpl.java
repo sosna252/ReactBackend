@@ -12,6 +12,7 @@ import pw.react.flatly.flatlybackend.repository.ItemRepository;
 import pw.react.flatly.flatlybackend.repository.UserRepository;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -99,6 +100,8 @@ public class BookingServiceImpl implements BookingService {
         for(Item item: items) {
             bookingsList.addAll(item.getBookings().stream().map(booking -> new BookingList(booking, item)).collect(Collectors.toList()));
         }
+
+        bookingsList.sort(Comparator.comparing(BookingList::getStart_date));
 
         return bookingsList;
     }
